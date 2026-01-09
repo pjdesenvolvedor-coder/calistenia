@@ -14,7 +14,7 @@ export type Question = {
 };
 
 export const MaleIcon = (props: LucideProps) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M10 18H5v-2h5v2zm9-2h-3v2h3v-2zm-9-4H5v2h5v-2zm9-2h-3v2h3v-2zm-9-4H5v2h5V8zm9 0h-3v2h3V8zm-9-4H5v2h5V4zm9 0h-3v2h3V4z"/><circle cx="12" cy="12" r="10"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M4 16.2A5 5 0 0 1 9 12h6a5 5 0 0 1 5 4.2"/><path d="M9 12a5 5 0 0 1-5-4.2A5 5 0 0 1 9 3.8a5 5 0 0 1 5 4.4"/><path d="m-2 -2 20 20"/><path d="M15 12a5 5 0 0 1 5 4.2 5 5 0 0 1-5 4.2 5 5 0 0 1-5-4.4"/></svg>
 );
 
 export const FemaleIcon = (props: LucideProps) => (
@@ -71,6 +71,16 @@ export const quizData: Question[] = [
       { text: "Iniciante", emoji: "😱" },
       { text: "Intermediário", emoji: "😃" },
       { text: "Avançado", emoji: "😎" },
+    ],
+  },
+  {
+    id: "q5",
+    question: "O que mais te animaria em um Desafio de 28 dias?",
+    answers: [
+      { text: "Ver resultado rápido no meu corpo.", emoji: "🤩" },
+      { text: "Ter um passo a passo simples que eu consiga seguir.", emoji: "🤗" },
+      { text: "Poder treinar em casa sem precisar de equipamentos.", emoji: "😎" },
+      { text: "Ter um desafio que me faça seguir firme e animado.", emoji: "💪" },
     ],
   },
 ];
