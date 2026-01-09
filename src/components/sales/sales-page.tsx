@@ -202,9 +202,6 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
                 <Zap className="w-6 h-6 mr-2"/>
                 QUERO ACESSO IMEDIATO
               </Button>
-              <div className="mt-4 text-center">
-                  {getImage('payment-methods') && <Image src={getImage('payment-methods')?.imageUrl || ''} alt="Payment methods" width={300} height={50} className="mx-auto" data-ai-hint="payment methods" />}
-              </div>
               <div className="mt-4 text-xs text-gray-500 text-center flex items-center justify-center gap-2">
                   <Lock className="w-3 h-3"/> Ambiente 100% seguro.
               </div>
