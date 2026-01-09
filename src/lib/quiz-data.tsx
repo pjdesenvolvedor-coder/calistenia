@@ -142,5 +142,17 @@ export const quizData: Question[] = [
       "4-5 dias",
       "6-7 dias",
     ],
+  },
+  {
+    id: "q9",
+    question: "Você tem alguma meta de peso que deseja perder?",
+    description: "Ótimo! Seus treinos serão adaptados para serem feitos Em casa em 20 minutos/dia",
+    answers: [
+      "Perder até 5kg",
+      "Perder de 5-10kg",
+      "Perder de 10-15kg",
+      "Perder mais de 15kg",
+      "Construir mais músculos e aumentar a força"
+    ],
   }
 ];
