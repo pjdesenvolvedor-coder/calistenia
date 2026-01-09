@@ -232,17 +232,14 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
 
       {/* Author section */}
       <section className="py-12 px-4 bg-gray-900 text-white">
-        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8 items-center">
+        <div className="max-w-4xl mx-auto grid grid-cols-1 gap-8 items-center text-center">
           <div>
             <p className="font-bold text-brand-green">QUEM SOU EU</p>
             <h2 className="text-3xl font-bold mt-2">Matheus, seu novo <br/>treinador pessoal.</h2>
-            <p className="mt-4 text-gray-300">Após anos de estudo e aplicação prática, desenvolvi o método de calistenia que me permitiu transformar meu corpo treinando em casa. Hoje, minha missão é ajudar pessoas como você a alcançarem a melhor versão de si mesmas, sem precisar de academias ou equipamentos caros.</p>
+            <p className="mt-4 text-gray-300 max-w-2xl mx-auto">Após anos de estudo e aplicação prática, desenvolvi o método de calistenia que me permitiu transformar meu corpo treinando em casa. Hoje, minha missão é ajudar pessoas como você a alcançarem a melhor versão de si mesmas, sem precisar de academias ou equipamentos caros.</p>
              <Button size="lg" className="mt-6 bg-brand-green hover:bg-brand-green-dark text-white font-bold">
               QUERO TRANSFORMAR MEU CORPO
             </Button>
-          </div>
-          <div>
-            {getImage('author-photo') && <Image src={getImage('author-photo')?.imageUrl || ''} alt="Matheus - Treinador" width={400} height={400} className="rounded-lg mx-auto" data-ai-hint="man portrait" />}
           </div>
         </div>
       </section>
