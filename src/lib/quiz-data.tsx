@@ -164,6 +164,25 @@ export const quizData: Question[] = [
     answers: [],
   },
   {
+    id: 'q12',
+    question: 'Como você se imagina após os 28 Dias do Desafio?',
+    answers: [
+      { text: 'Me olhar no espelho e ficar feliz com o que vejo!', emoji: '😊' },
+      { text: 'Ter energia para meus dias renderem mais!', emoji: '⚡️' },
+      { text: 'Dormir melhor sem sofrer com insônias e acordar cansado!', emoji: '😴' },
+      { text: 'Aumentar minha força para tarefas físicas!', emoji: '💪' },
+    ],
+  },
+  {
+    id: 'q13',
+    question: 'Prefere receber seu protocolo de treino personalizado por vídeos ou textos?',
+    answers: [
+        { text: 'Vídeos', emoji: '🎥' },
+        { text: 'Textos e Imagens', emoji: '📝' },
+        { text: 'Dos dois jeitos', emoji: '👍' },
+    ],
+  },
+  {
     id: 'q14',
     type: 'multiple-checkbox',
     question: 'Quais áreas do corpo você quer destacar?',
@@ -185,25 +204,6 @@ export const quizData: Question[] = [
       "Dor nas costas",
       "Dor nos ombros",
       "Dor nos joelhos",
-    ],
-  },
-  {
-    id: 'q13',
-    question: 'Prefere receber seu protocolo de treino personalizado por vídeos ou textos?',
-    answers: [
-        { text: 'Vídeos', emoji: '🎥' },
-        { text: 'Textos e Imagens', emoji: '📝' },
-        { text: 'Dos dois jeitos', emoji: '👍' },
-    ],
-  },
-  {
-    id: 'q12',
-    question: 'Como você se imagina após os 28 Dias do Desafio?',
-    answers: [
-      { text: 'Me olhar no espelho e ficar feliz com o que vejo!', emoji: '😊' },
-      { text: 'Ter energia para meus dias renderem mais!', emoji: '⚡️' },
-      { text: 'Dormir melhor sem sofrer com insônias e acordar cansado!', emoji: '😴' },
-      { text: 'Aumentar minha força para tarefas físicas!', emoji: '💪' },
     ],
   }
 ];
