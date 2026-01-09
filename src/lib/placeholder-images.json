@@ -1,3 +1,34 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "quiz-hero",
+      "description": "A vibrant, abstract image representing creativity and planning.",
+      "imageUrl": "https://images.unsplash.com/photo-1531489500496-0e84f798da0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMHZpYnJhbnR8ZW58MHx8fHwxNzY3ODMzNTUyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract vibrant"
+    },
+    {
+      "id": "box-essencial",
+      "description": "A starter box with essential items.",
+      "imageUrl": "https://images.unsplash.com/photo-1656543802898-41c8c46683a7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwcm9kdWN0JTIwYm94fGVufDB8fHx8MTc2Nzg2ODI2NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "product box"
+    },
+    {
+      "id": "box-plus",
+      "description": "An upgraded box with more items.",
+      "imageUrl": "https://images.unsplash.com/photo-1664787020149-ebb836adcf3c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwcm9kdWN0JTIwcGFja2FnZXxlbnwwfHx8fDE3Njc4Nzk3NTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "product package"
+    },
+    {
+      "id": "box-premium",
+      "description": "A premium box with exclusive items.",
+      "imageUrl": "https://images.unsplash.com/photo-1763256614589-199db7a3bd51?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxsdXh1cnklMjBnaWZ0fGVufDB8fHx8MTc2Nzg5ODI5MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "luxury gift"
+    },
+    {
+      "id": "produto-padrão",
+      "description": "A standard product box.",
+      "imageUrl": "https://images.unsplash.com/photo-1566041510639-8d95a2490bfb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx3aGl0ZSUyMGJveHxlbnwwfHx8fDE3Njc5Mzk1MDZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "white box"
+    }
+  ]
 }
