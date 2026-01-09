@@ -9,7 +9,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import type { Answer, Question } from "@/lib/quiz-data.tsx";
+import type { Answer, Question } from "@/lib/quiz-data";
 import { ChevronRight } from "lucide-react";
 
 type QuizScreenProps = {
@@ -32,7 +32,12 @@ export function QuizScreen({
   questionNumber,
   totalQuestions,
 }: QuizScreenProps) {
-  const hasImageAnswers = question.answers.some(isAnswerObject);
+  const hasImageAnswers = question.answers.some(
+    (a) => isAnswerObject(a) && a.image
+  );
+  const hasEmojiAnswers = question.answers.some(
+    (a) => isAnswerObject(a) && a.emoji
+  );
 
   if (hasImageAnswers) {
     return (
@@ -80,7 +85,6 @@ export function QuizScreen({
     );
   }
 
-
   return (
     <div className="w-full animate-in fade-in slide-in-from-bottom-5 duration-500">
       <div className="mb-4">
@@ -97,6 +101,11 @@ export function QuizScreen({
           <CardTitle className="font-body text-3xl font-bold text-foreground/90">
             {question.question}
           </CardTitle>
+           {question.description && (
+              <CardDescription className="text-muted-foreground pt-2">
+                {question.description}
+              </CardDescription>
+            )}
         </CardHeader>
         <CardContent className="flex flex-col space-y-3">
           {question.answers.map((answer, index) => (
@@ -104,11 +113,16 @@ export function QuizScreen({
               key={index}
               variant="outline"
               size="lg"
-              className="justify-start text-left h-auto py-3 bg-secondary/80 border-secondary hover:bg-secondary hover:border-primary hover:text-primary group"
-              onClick={() => onAnswer(question.question, answer as string)}
+              className="justify-start text-left h-auto py-3 bg-secondary/80 border-secondary hover:bg-secondary hover:border-primary text-foreground hover:text-primary group"
+              onClick={() => onAnswer(question.question, isAnswerObject(answer) ? answer.text : answer)}
             >
-              <span className="mr-3 font-bold text-primary">{String.fromCharCode(65 + index)}</span>
-              <span className="flex-1 whitespace-normal group-hover:text-primary">{isAnswerObject(answer) ? answer.text : answer}</span>
+              {hasEmojiAnswers && isAnswerObject(answer) && answer.emoji ? (
+                <span className="mr-3 text-xl">{answer.emoji}</span>
+              ) : (
+                <span className="mr-3 font-bold text-primary">{String.fromCharCode(65 + index)}</span>
+              )}
+              <span className="flex-1 whitespace-normal">{isAnswerObject(answer) ? answer.text : answer}</span>
+              <ChevronRight className="h-5 w-5 text-muted-foreground ml-auto" />
             </Button>
           ))}
         </CardContent>
