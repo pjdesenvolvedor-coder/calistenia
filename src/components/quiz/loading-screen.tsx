@@ -27,14 +27,18 @@ const carouselImages = placeholderData.placeholderImages.filter(img => img.id.st
 export function LoadingScreen({ mainGoal, onLoadingComplete, answers }: { mainGoal: string, onLoadingComplete: (answers: any) => void, answers: any }) {
   const [progress, setProgress] = useState<{ [key: number]: number }>({});
   const [done, setDone] = useState<number[]>([]);
-  const loadingCompleteRef = useRef(false);
+  const onLoadingCompleteRef = useRef(onLoadingComplete);
+  onLoadingCompleteRef.current = onLoadingComplete;
 
   useEffect(() => {
     let cumulativeDelay = 0;
     const totalDuration = loadingSteps.reduce((acc, step) => acc + step.duration, 0);
 
+    const timeouts: NodeJS.Timeout[] = [];
+    const intervals: NodeJS.Timeout[] = [];
+
     loadingSteps.forEach((step, index) => {
-      setTimeout(() => {
+      const stepTimeout = setTimeout(() => {
         let currentProgress = 0;
         const interval = setInterval(() => {
           currentProgress += 5;
@@ -45,21 +49,23 @@ export function LoadingScreen({ mainGoal, onLoadingComplete, answers }: { mainGo
             setDone((prev) => [...prev, index]);
           }
         }, step.duration / 20);
+        intervals.push(interval);
       }, cumulativeDelay);
+      timeouts.push(stepTimeout);
 
       cumulativeDelay += step.duration;
     });
 
     const finalTimeout = setTimeout(() => {
-      if (!loadingCompleteRef.current) {
-        onLoadingComplete(answers);
-        loadingCompleteRef.current = true;
-      }
-    }, totalDuration);
+        onLoadingCompleteRef.current(answers);
+    }, totalDuration + 100); // Add a small buffer
+    timeouts.push(finalTimeout);
 
-    return () => clearTimeout(finalTimeout);
-
-  }, [onLoadingComplete, answers]);
+    return () => {
+        timeouts.forEach(clearTimeout);
+        intervals.forEach(clearInterval);
+    };
+  }, [answers]);
 
   return (
     <Card className="w-full max-w-md mx-auto p-4 sm:p-6 text-center animate-in fade-in zoom-in-95 duration-500 overflow-hidden">
