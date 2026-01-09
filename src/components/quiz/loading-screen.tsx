@@ -9,6 +9,8 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
 } from "@/components/ui/carousel";
 import { CheckCircle, Target, Settings, Award, BarChart, Loader2 } from "lucide-react";
 import actualPlaceholderData from "@/lib/placeholder-images.json";
@@ -128,6 +130,9 @@ export function LoadingScreen({
               plugins={[autoplayPlugin.current]}
               onMouseEnter={autoplayPlugin.current.stop}
               onMouseLeave={autoplayPlugin.current.reset}
+              opts={{
+                loop: true,
+              }}
             >
               <CarouselContent>
                 {carouselImages.map((image) => (
@@ -148,6 +153,8 @@ export function LoadingScreen({
                   </CarouselItem>
                 ))}
               </CarouselContent>
+               <CarouselPrevious />
+               <CarouselNext />
             </Carousel>
         </div>
       </CardContent>
