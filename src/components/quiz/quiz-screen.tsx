@@ -45,7 +45,7 @@ export function QuizScreen({
         </div>
         <Card className="w-full max-w-md mx-auto bg-card border-border shadow-lg">
           <CardHeader className="text-center">
-            <CardTitle className="font-headline text-3xl font-black uppercase !leading-tight">
+            <CardTitle className="font-body text-3xl font-bold">
               {question.question}
             </CardTitle>
             {question.description && (
@@ -94,7 +94,7 @@ export function QuizScreen({
           <CardDescription className="text-primary font-semibold">
             Pergunta {questionNumber} de {totalQuestions}
           </CardDescription>
-          <CardTitle className="font-headline text-3xl font-black uppercase !leading-tight text-foreground/90">
+          <CardTitle className="font-body text-3xl font-bold text-foreground/90">
             {question.question}
           </CardTitle>
         </CardHeader>
