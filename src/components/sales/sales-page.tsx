@@ -42,6 +42,13 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
   const getImage = (id: string) => placeholderData.placeholderImages.find(img => img.id === id);
   const mainGoal = recommendation.reasoning.replace('Com base nas suas respostas, seu objetivo é ', '');
 
+  const handleScrollToOffer = () => {
+    const offerSection = document.getElementById('oferta');
+    if (offerSection) {
+      offerSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="bg-white text-gray-800 font-sans">
       {/* Header */}
@@ -176,16 +183,16 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
       
       {/* Final CTA */}
       <section id="oferta" className="py-16 px-4 bg-gray-100">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-10 border-4 border-green-500 relative">
             <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-red-600 text-white px-6 py-1 rounded-full text-sm font-bold uppercase tracking-wider">
               Oferta por tempo limitado
             </div>
-            <div className="text-gray-800">
+            <div className="text-center">
               <h2 className="text-2xl font-extrabold">PROTOCOLO CALISTENIA</h2>
               <p className="text-brand-green font-bold text-lg">DEFINIÇÃO MUSCULAR</p>
               
-              <ul className="space-y-2 mt-4 text-sm">
+              <ul className="space-y-2 mt-4 text-sm text-left max-w-sm mx-auto">
                 <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-brand-green" /> Plano de Treino Personalizado</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-brand-green" /> Vídeo Aulas Completas</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-brand-green" /> Protocolo Alimentar Flexível</li>
@@ -229,7 +236,7 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
             <p className="font-bold text-brand-green">QUEM SOU EU</p>
             <h2 className="text-3xl font-bold mt-2">Matheus, seu novo <br/>treinador pessoal.</h2>
             <p className="mt-4 text-gray-300 max-w-2xl mx-auto">Após anos de estudo e aplicação prática, desenvolvi o método de calistenia que me permitiu transformar meu corpo treinando em casa. Hoje, minha missão é ajudar pessoas como você a alcançarem a melhor versão de si mesmas, sem precisar de academias ou equipamentos caros.</p>
-             <Button size="lg" className="mt-6 bg-brand-green hover:bg-brand-green-dark text-white font-bold">
+             <Button size="lg" className="mt-6 bg-brand-green hover:bg-brand-green-dark text-white font-bold" onClick={handleScrollToOffer}>
               QUERO TRANSFORMAR MEU CORPO
             </Button>
           </div>
@@ -251,7 +258,7 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
         <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-2xl font-bold">Alcance a sua melhor versão em 28 dias!</h2>
             <p className="mt-2 text-gray-600">Acesso imediato ao plano de treino e todos os bônus por apenas <span className="font-bold">12x de R$5,80</span></p>
-            <Button size="lg" className="mt-6 h-14 bg-brand-green hover:bg-brand-green-dark text-white text-xl font-bold animate-pulse-scale">
+            <Button size="lg" className="mt-6 h-14 bg-brand-green hover:bg-brand-green-dark text-white text-xl font-bold animate-pulse-scale" onClick={handleScrollToOffer}>
                 <Zap className="w-6 h-6 mr-2"/>
                 SIM, QUERO MEU ACESSO!
             </Button>
