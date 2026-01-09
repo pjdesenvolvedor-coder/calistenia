@@ -188,7 +188,7 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
             <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-red-600 text-white px-6 py-1 rounded-full text-sm font-bold uppercase tracking-wider">
               Oferta por tempo limitado
             </div>
-            <div className="text-center">
+            <div className="text-center pt-8">
               <h2 className="text-2xl font-extrabold">PROTOCOLO CALISTENIA</h2>
               <p className="text-brand-green font-bold text-lg">DEFINIÇÃO MUSCULAR</p>
               
