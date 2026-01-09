@@ -171,7 +171,7 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
             <h3 className="text-2xl font-bold">Treine Online e queime gordura em Menos de 30 Minutos por Dia!</h3>
             <p className="mt-2 text-gray-600">Acesse nossa plataforma de treinos em vídeo do seu celular, tablet ou computador.</p>
             <div className="mt-6 max-w-2xl mx-auto">
-              <Image src={getImage('devices-mockup')?.imageUrl || ''} alt="Devices mockup" width={1000} height={500} data-ai-hint="devices mockup" />
+              <Image src={getImage('author-photo')?.imageUrl || ''} alt="Devices mockup" width={1000} height={500} data-ai-hint="devices mockup" />
             </div>
           </div>
         </div>
