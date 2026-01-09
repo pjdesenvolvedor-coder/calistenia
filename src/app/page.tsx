@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ProductRecommendationOutput, recommendProduct } from "@/ai/flows/product-recommendation";
 
@@ -56,27 +56,8 @@ export default function Home() {
   const finishQuiz = async (finalAnswers: Answers) => {
     setQuizState("loading");
     try {
-      // Simulate loading bars filling up (e.g., 7 seconds)
-      await new Promise(resolve => setTimeout(resolve, 7000));
-      
       const result = await recommendProduct({ quizAnswers: finalAnswers });
       setRecommendation(result);
-
-      // Show toast
-      toast({
-        title: "Tudo pronto!",
-        description: "Encontramos o treino ideal para você.",
-      });
-
-      // Change state to "redirecting"
-      setQuizState("redirecting");
-
-      // Wait 3 seconds on the redirecting screen
-      await new Promise(resolve => setTimeout(resolve, 3000));
-
-      // Finally, go to results
-      setQuizState("results");
-
     } catch (error) {
       console.error("Failed to get recommendation", error);
       toast({
@@ -87,6 +68,30 @@ export default function Home() {
       handleReset();
     }
   }
+
+  useEffect(() => {
+    if (quizState === 'loading' && recommendation) {
+      const showResults = async () => {
+        // Show toast
+        toast({
+          title: "Tudo pronto!",
+          description: "Encontramos o treino ideal para você.",
+        });
+  
+        // Change state to "redirecting"
+        setQuizState("redirecting");
+  
+        // Wait 3 seconds on the redirecting screen
+        await new Promise(resolve => setTimeout(resolve, 3000));
+  
+        // Finally, go to results
+        setQuizState("results");
+      };
+      
+      showResults();
+    }
+  }, [quizState, recommendation, toast]);
+
 
   const handleReset = () => {
     setAnswers({});
@@ -140,7 +145,7 @@ export default function Home() {
         );
       case "loading":
         const mainGoal = answers['Qual o seu principal objetivo ao iniciar este desafio?'] || "Secar gordura do corpo";
-        return <LoadingScreen mainGoal={mainGoal} />;
+        return <LoadingScreen mainGoal={mainGoal} onLoadingComplete={finishQuiz} answers={answers} />;
       case "redirecting":
         return <RedirectingScreen />;
       case "results":
