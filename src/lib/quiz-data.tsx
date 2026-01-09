@@ -133,5 +133,14 @@ export const quizData: Question[] = [
         { text: "Ao ar livre", image: OutdoorIcon },
         { text: "Na academia", image: GymIcon },
     ]
+  },
+  {
+    id: "q8",
+    question: "Quantos dias por semana você pode treinar?",
+    answers: [
+      "2-3 dias",
+      "4-5 dias",
+      "6-7 dias",
+    ],
   }
 ];
