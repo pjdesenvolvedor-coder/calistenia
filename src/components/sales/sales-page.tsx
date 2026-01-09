@@ -18,6 +18,8 @@ import {
 import placeholderData from '@/lib/placeholder-images.json';
 import { FaqItem } from './faq-item';
 import type { ProductRecommendationOutput } from '@/ai/flows/product-recommendation';
+import { SalesNotification } from './sales-notification';
+import { useEffect, useState } from 'react';
 
 type SalesPageProps = {
   recommendation: ProductRecommendationOutput;
@@ -38,9 +40,42 @@ const faqItems = [
   { question: "E se eu não gostar?", answer: "Você tem uma garantia incondicional de 7 dias. Se por qualquer motivo não ficar satisfeito, basta pedir o reembolso e devolvemos 100% do seu dinheiro." },
 ];
 
+const salesData = [
+  { name: 'Maria F.', time: 'há 2 minutos', product: 'Protocolo Completo no Pix' },
+  { name: 'José A.', time: 'há 5 minutos', product: 'Protocolo Completo no Cartão' },
+  { name: 'Ana C.', time: 'há 8 minutos', product: 'Protocolo Completo no Pix' },
+  { name: 'Lucas S.', time: 'há 12 minutos', product: 'Protocolo Completo no Cartão' },
+  { name: 'Fernanda L.', time: 'há 15 minutos', product: 'Protocolo Completo no Pix' },
+];
+
 export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
   const getImage = (id: string) => placeholderData.placeholderImages.find(img => img.id === id);
   const mainGoal = recommendation.reasoning.replace('Com base nas suas respostas, seu objetivo é ', '');
+
+  const [currentSale, setCurrentSale] = useState<typeof salesData[0] | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const showRandomSale = () => {
+      setIsVisible(false); // Esconde a notificação atual para animar a próxima
+      setTimeout(() => {
+        const randomIndex = Math.floor(Math.random() * salesData.length);
+        setCurrentSale(salesData[randomIndex]);
+        setIsVisible(true);
+      }, 500); // tempo para a animação de saída
+    };
+
+    const initialDelay = setTimeout(showRandomSale, 5000); // Primeira notificação após 5s
+
+    const interval = setInterval(() => {
+      showRandomSale();
+    }, Math.random() * 10000 + 8000); // Intervalo aleatório entre 8s e 18s
+
+    return () => {
+      clearTimeout(initialDelay);
+      clearInterval(interval);
+    };
+  }, []);
 
   const handleScrollToOffer = () => {
     const offerSection = document.getElementById('oferta');
@@ -269,6 +304,15 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
           Refazer Quiz
         </Button>
       </footer>
+      {isVisible && currentSale && (
+        <SalesNotification
+          key={currentSale.name + currentSale.time}
+          name={currentSale.name}
+          time={currentSale.time}
+          product={currentSale.product}
+          onHide={() => setIsVisible(false)}
+        />
+      )}
     </div>
   );
 }
