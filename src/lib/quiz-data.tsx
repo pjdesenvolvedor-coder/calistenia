@@ -50,4 +50,14 @@ export const quizData: Question[] = [
       "Eliminar dores no corpo",
     ],
   },
+  {
+    id: "q3",
+    question: "E o que mais te atrapalhou de conseguir isso até hoje?",
+    answers: [
+      "A falta de tempo no dia a dia",
+      "A falta de motivação para continuar",
+      "A dúvida em não saber como começar do jeito certo",
+      "O desânimo de ter tentado antes sem ter resultados",
+    ],
+  },
 ];
