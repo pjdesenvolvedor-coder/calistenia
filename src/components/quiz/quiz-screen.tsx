@@ -39,6 +39,8 @@ export function QuizScreen({
     (a) => isAnswerObject(a) && a.emoji
   );
 
+  const answerOptionClass = "justify-start text-left h-auto py-3 bg-secondary/80 border-secondary hover:bg-secondary hover:border-primary text-foreground hover:text-primary group";
+
   if (hasImageAnswers) {
     return (
       <div className="w-full animate-in fade-in slide-in-from-bottom-5 duration-500">
@@ -50,31 +52,31 @@ export function QuizScreen({
         </div>
         <Card className="w-full max-w-md mx-auto bg-card border-border shadow-lg">
           <CardHeader className="text-center">
-            <CardTitle className="font-body text-3xl font-bold">
-              {question.question}
-            </CardTitle>
-            {question.description && (
-              <CardDescription className="text-muted-foreground pt-2">
+             {question.description && (
+              <CardDescription className="text-primary font-semibold bg-primary/10 border border-primary/20 rounded-lg py-2 px-4 mb-4">
                 {question.description}
               </CardDescription>
             )}
+            <CardTitle className="font-body text-3xl font-bold">
+              {question.question}
+            </CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-4">
+          <CardContent className="flex flex-col space-y-3">
             {question.answers.map((answer, index) => {
               if (isAnswerObject(answer)) {
                 const Icon = answer.image;
                 return (
-                  <button
+                   <Button
                     key={index}
-                    className="flex flex-col items-center justify-center gap-4 rounded-lg border bg-secondary/30 p-6 text-center transition-colors hover:bg-secondary hover:border-primary hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary group"
+                    variant="outline"
+                    size="lg"
+                    className={answerOptionClass}
                     onClick={() => onAnswer(question.question, answer.text)}
                   >
-                    {Icon && <Icon className="h-20 w-20 text-primary" />}
-                    <div className="flex w-full items-center justify-between font-semibold">
-                      <span>{answer.text}</span>
-                      <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                  </button>
+                    {Icon && <Icon className="h-8 w-8 mr-4 text-primary" />}
+                    <span className="flex-1 whitespace-normal">{answer.text}</span>
+                    <ChevronRight className="h-5 w-5 text-muted-foreground ml-auto" />
+                  </Button>
                 );
               }
               return null;
@@ -113,7 +115,7 @@ export function QuizScreen({
               key={index}
               variant="outline"
               size="lg"
-              className="justify-start text-left h-auto py-3 bg-secondary/80 border-secondary hover:bg-secondary hover:border-primary text-foreground hover:text-primary group"
+              className={answerOptionClass}
               onClick={() => onAnswer(question.question, isAnswerObject(answer) ? answer.text : answer)}
             >
               {hasEmojiAnswers && isAnswerObject(answer) && answer.emoji ? (

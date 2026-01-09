@@ -21,6 +21,36 @@ export const FemaleIcon = (props: LucideProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="4" /><path d="M12 16v6" /><path d="M9 19h6" /></svg>
 );
 
+export const HouseIcon = (props: LucideProps) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" {...props}>
+        <g fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="4">
+            <path fill="#2F88FF" stroke="#000" d="M44 44V20L24 4L4 20v24h12V28h12v16h12Z"/>
+            <path fill="#43CCF8" stroke="#000" d="M44 44V20L24 4L4 20v24h12V28h12v16h12Z"/>
+            <path stroke="#fff" d="M44 44V20L24 4L4 20v24h12V28h12v16Z"/>
+        </g>
+    </svg>
+);
+
+export const OutdoorIcon = (props: LucideProps) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" {...props}>
+        <g fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="4">
+            <path fill="#2F88FF" stroke="#000" d="M48 48H0V0h48v48Z" transform="scale(-1 1) rotate(-180 24 24)"/>
+            <path fill="#43CCF8" stroke="#000" d="M48 48H0V0h48v48Z" transform="scale(-1 1) rotate(-180 24 24)"/>
+            <path stroke="#fff" d="m4 38l10-10l10 10l10-10l10 10"/>
+            <circle cx="36" cy="14" r="6" fill="#FFD60A" stroke="#fff"/>
+        </g>
+    </svg>
+);
+
+export const GymIcon = (props: LucideProps) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" {...props}>
+        <g fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="4">
+            <path fill="#FFD60A" d="M6 10h8v8H6zm28 0h8v8h-8zM24 16.222V44M14 44h20M6 14h36M16 10H4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h2m24 0h6a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-4M18 10V6M30 10V6"/>
+            <circle cx="24" cy="8.222" r="4" fill="#2F88FF"/>
+        </g>
+    </svg>
+);
+
 export const quizData: Question[] = [
   {
     id: "q0",
@@ -94,4 +124,14 @@ export const quizData: Question[] = [
       "1 hora",
     ],
   },
+  {
+    id: "q7",
+    question: "Em qual ambiente você prefere treinar?",
+    description: "Estamos quase lá! Para garantir que seu plano seja 100% prático para sua rotina...",
+    answers: [
+        { text: "Em casa", image: HouseIcon },
+        { text: "Ao ar livre", image: OutdoorIcon },
+        { text: "Na academia", image: GymIcon },
+    ]
+  }
 ];
