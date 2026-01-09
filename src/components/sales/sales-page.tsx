@@ -42,9 +42,9 @@ const faqItems = [
 
 const salesData = [
   { name: 'Maria F.', time: 'há 2 minutos', product: 'Protocolo Completo no Pix' },
-  { name: 'José A.', time: 'há 5 minutos', product: 'Protocolo Completo no Cartão' },
+  { name: 'José A.', time: 'há 5 minutos', product: 'Protocolo Completo no Pix' },
   { name: 'Ana C.', time: 'há 8 minutos', product: 'Protocolo Completo no Pix' },
-  { name: 'Lucas S.', time: 'há 12 minutos', product: 'Protocolo Completo no Cartão' },
+  { name: 'Lucas S.', time: 'há 12 minutos', product: 'Protocolo Completo no Pix' },
   { name: 'Fernanda L.', time: 'há 15 minutos', product: 'Protocolo Completo no Pix' },
 ];
 
