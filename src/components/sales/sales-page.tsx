@@ -84,6 +84,11 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
     }
   };
 
+  const handleCheckout = () => {
+    window.location.href = 'https://pay.lowify.com.br/checkout?product_id=ifaK3n';
+  };
+
+
   return (
     <div className="bg-white text-gray-800 font-sans">
       {/* Header */}
@@ -236,7 +241,7 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
                 <p className="text-5xl font-extrabold text-brand-green">R$27,00</p>
                 <p className="text-gray-600 text-sm">à vista no Pix</p>
               </div>
-              <Button size="lg" className="w-full h-14 bg-brand-green hover:bg-brand-green-dark text-white text-xl font-bold animate-pulse-scale" onClick={handleScrollToOffer}>
+              <Button size="lg" className="w-full h-14 bg-brand-green hover:bg-brand-green-dark text-white text-xl font-bold animate-pulse-scale" onClick={handleCheckout}>
                 <Zap className="w-6 h-6 mr-2"/>
                 QUERO ACESSO IMEDIATO
               </Button>
