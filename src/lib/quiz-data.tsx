@@ -177,6 +177,15 @@ export const quizData: Question[] = [
     ],
   },
   {
+    id: 'q13',
+    question: 'Prefere receber seu protocolo de treino personalizado por vídeos ou textos?',
+    answers: [
+        { text: 'Vídeos', emoji: '🎥' },
+        { text: 'Textos e Imagens', emoji: '📝' },
+        { text: 'Dos dois jeitos', emoji: '👍' },
+    ],
+  },
+  {
     id: "q11",
     type: 'measurement',
     question: "Se souber, informe seu peso e altura.",
