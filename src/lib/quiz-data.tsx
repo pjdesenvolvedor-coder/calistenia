@@ -8,6 +8,7 @@ export type Answer = {
 
 export type Question = {
   id: string;
+  type?: 'multiple-choice' | 'measurement';
   question: string;
   description?: string;
   answers: (string | Answer)[];
@@ -154,5 +155,12 @@ export const quizData: Question[] = [
       "Perder mais de 15kg",
       "Construir mais músculos e aumentar a força"
     ],
+  },
+  {
+    id: "q10",
+    type: 'measurement',
+    question: "Se souber, informe seu peso e altura.",
+    description: "Para uma estimativa de gasto calórico ainda mais precisa...",
+    answers: [],
   }
 ];

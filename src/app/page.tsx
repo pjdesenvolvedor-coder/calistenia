@@ -8,6 +8,7 @@ import { ProductRecommendationOutput, recommendProduct } from "@/ai/flows/produc
 import { WelcomeScreen } from "@/components/quiz/welcome-screen";
 import { QuizScreen } from "@/components/quiz/quiz-screen";
 import { ResultScreen } from "@/components/quiz/result-screen";
+import { MeasurementScreen } from "@/components/quiz/measurement-screen";
 import { quizData } from "@/lib/quiz-data.tsx";
 
 type QuizState = "welcome" | "in-progress" | "loading" | "results";
@@ -24,29 +25,39 @@ export default function Home() {
     setQuizState("in-progress");
   };
 
-  const handleAnswer = async (question: string, answer: string) => {
+  const handleAnswer = (question: string, answer: string) => {
     const newAnswers = { ...answers, [question]: answer };
     setAnswers(newAnswers);
 
     if (currentQuestionIndex < quizData.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      setQuizState("loading");
-      try {
-        const result = await recommendProduct({ quizAnswers: newAnswers });
-        setRecommendation(result);
-        setQuizState("results");
-      } catch (error) {
-        console.error("Failed to get recommendation", error);
-        toast({
-          title: "Erro",
-          description: "Não foi possível obter a sua recomendação. Por favor, tente novamente.",
-          variant: "destructive",
-        });
-        handleReset();
-      }
+      finishQuiz(newAnswers);
     }
   };
+
+  const handleMeasurementSubmit = (measurements: Record<string, string>) => {
+    const newAnswers = { ...answers, ...measurements };
+    setAnswers(newAnswers);
+    finishQuiz(newAnswers);
+  };
+  
+  const finishQuiz = async (finalAnswers: Answers) => {
+    setQuizState("loading");
+    try {
+      const result = await recommendProduct({ quizAnswers: finalAnswers });
+      setRecommendation(result);
+      setQuizState("results");
+    } catch (error) {
+      console.error("Failed to get recommendation", error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível obter a sua recomendação. Por favor, tente novamente.",
+        variant: "destructive",
+      });
+      handleReset();
+    }
+  }
 
   const handleReset = () => {
     setAnswers({});
@@ -60,10 +71,19 @@ export default function Home() {
       case "welcome":
         return <WelcomeScreen onStart={handleStart} />;
       case "in-progress":
+        const currentQuestion = quizData[currentQuestionIndex];
+        if (currentQuestion.type === 'measurement') {
+          return (
+            <MeasurementScreen
+              question={currentQuestion}
+              onSubmit={handleMeasurementSubmit}
+            />
+          );
+        }
         return (
           <QuizScreen
             key={currentQuestionIndex}
-            question={quizData[currentQuestionIndex]}
+            question={currentQuestion}
             onAnswer={handleAnswer}
             progress={((currentQuestionIndex + 1) / quizData.length) * 100}
             questionNumber={currentQuestionIndex + 1}
