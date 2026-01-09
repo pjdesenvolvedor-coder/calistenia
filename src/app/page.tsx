@@ -61,13 +61,14 @@ export default function Home() {
   
   // This function now provides a static recommendation to bypass the AI flow.
   const getRecommendation = useCallback(() => {
+    const mainGoal = answers['Qual o seu principal objetivo ao iniciar este desafio?'] || "Secar gordura e definir o corpo";
     const staticRecommendation: ProductRecommendationOutput = {
       recommendedProduct: "Definição Muscular",
-      reasoning: "Com base nas suas respostas, seu objetivo é secar gordura e definir o corpo."
+      reasoning: `Com base nas suas respostas, seu objetivo é ${mainGoal.toLowerCase()}`
     };
     setRecommendation(staticRecommendation);
     setQuizState("results");
-  }, []);
+  }, [answers]);
 
 
   const renderContent = () => {
@@ -124,7 +125,7 @@ export default function Home() {
         return <LoadingScreen mainGoal={mainGoal} onLoadingComplete={getRecommendation} />;
       case "results":
         return recommendation ? (
-          <ResultScreen recommendation={recommendation} onRetake={handleReset} />
+          <ResultScreen answers={answers} recommendation={recommendation} onRetake={handleReset} />
         ) : null;
       default:
         return <WelcomeScreen onStart={handleStart} />;

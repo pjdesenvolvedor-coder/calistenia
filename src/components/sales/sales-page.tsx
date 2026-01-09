@@ -40,6 +40,7 @@ const faqItems = [
 
 export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
   const getImage = (id: string) => placeholderData.placeholderImages.find(img => img.id === id);
+  const mainGoal = recommendation.reasoning.replace('Com base nas suas respostas, seu objetivo é ', '');
 
   return (
     <div className="bg-white text-gray-800 font-sans">
@@ -67,7 +68,7 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
             <div className="mt-6 grid md:grid-cols-3 gap-6 text-center">
               <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                 <p className="text-sm text-green-700 font-semibold">SEU OBJETIVO É</p>
-                <p className="text-lg font-bold text-green-900">{recommendation.reasoning.split(".")[0]}</p>
+                <p className="text-lg font-bold text-green-900 capitalize">{mainGoal}</p>
               </div>
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                 <p className="text-sm text-blue-700 font-semibold">NÍVEL DE TREINO</p>
