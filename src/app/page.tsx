@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ProductRecommendationOutput, recommendProduct } from "@/ai/flows/product-recommendation";
 
@@ -13,7 +13,7 @@ import { quizData } from "@/lib/quiz-data.tsx";
 import { LoadingScreen } from "@/components/quiz/loading-screen";
 import { RedirectingScreen } from "@/components/quiz/redirecting-screen";
 
-type QuizState = "welcome" | "in-progress" | "loading" | "redirecting" | "results";
+type QuizState = "welcome" | "in-progress" | "loading" | "results";
 type Answers = Record<string, string>;
 
 export default function Home() {
@@ -22,13 +22,21 @@ export default function Home() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [recommendation, setRecommendation] = useState<ProductRecommendationOutput | null>(null);
   const { toast } = useToast();
-  const [isRecommendationFlowStarted, setIsRecommendationFlowStarted] = useState(false);
+  const recommendationFlowStarted = useRef(false);
 
   const handleStart = () => {
     setQuizState("in-progress");
   };
 
-  const advanceToNextQuestion = useCallback((currentAnswers: Answers) => {
+  const handleReset = () => {
+    setAnswers({});
+    setCurrentQuestionIndex(0);
+    setRecommendation(null);
+    setQuizState("welcome");
+    recommendationFlowStarted.current = false;
+  };
+
+  const advanceToNextQuestion = useCallback(() => {
     if (currentQuestionIndex < quizData.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
@@ -39,28 +47,29 @@ export default function Home() {
   const handleAnswer = (question: string, answer: string) => {
     const newAnswers = { ...answers, [question]: answer };
     setAnswers(newAnswers);
-    advanceToNextQuestion(newAnswers);
+    advanceToNextQuestion();
   };
 
   const handleMeasurementSubmit = (measurements: Record<string, string>) => {
     const newAnswers = { ...answers, ...measurements };
     setAnswers(newAnswers);
-    advanceToNextQuestion(newAnswers);
+    advanceToNextQuestion();
   };
   
   const handleCheckboxSubmit = (question: string, selectedAnswers: string[]) => {
     const newAnswers = { ...answers, [question]: selectedAnswers.join(", ") };
     setAnswers(newAnswers);
-    advanceToNextQuestion(newAnswers);
+    advanceToNextQuestion();
   };
   
-  const handleLoadingComplete = useCallback(async () => {
-    if (isRecommendationFlowStarted) return;
-    setIsRecommendationFlowStarted(true);
+  const getRecommendation = useCallback(async () => {
+    if (recommendationFlowStarted.current) return;
+    recommendationFlowStarted.current = true;
 
     try {
       const result = await recommendProduct({ quizAnswers: answers });
       setRecommendation(result);
+      setQuizState("results");
     } catch (error) {
       console.error("Failed to get recommendation", error);
       toast({
@@ -68,42 +77,10 @@ export default function Home() {
         description: "Não foi possível obter a sua recomendação. Por favor, tente novamente.",
         variant: "destructive",
       });
-      // Optionally reset to the beginning
-      // handleReset(); 
+      handleReset(); 
     }
-  }, [answers, isRecommendationFlowStarted, toast]);
+  }, [answers, toast]);
 
-  useEffect(() => {
-    if (quizState === 'loading' && !isRecommendationFlowStarted) {
-      // This is now handled by the onLoadingComplete callback from LoadingScreen
-    }
-  }, [quizState, isRecommendationFlowStarted, handleLoadingComplete]);
-
-  useEffect(() => {
-    if (recommendation) {
-      const showResults = async () => {
-        // Change state to "redirecting"
-        setQuizState("redirecting");
-
-        // Wait 3 seconds on the redirecting screen
-        await new Promise(resolve => setTimeout(resolve, 3000));
-
-        // Finally, go to results
-        setQuizState("results");
-      };
-      
-      showResults();
-    }
-  }, [recommendation]);
-
-
-  const handleReset = () => {
-    setAnswers({});
-    setCurrentQuestionIndex(0);
-    setRecommendation(null);
-    setQuizState("welcome");
-    setIsRecommendationFlowStarted(false);
-  };
 
   const renderContent = () => {
     const currentQuestion = quizData[currentQuestionIndex];
@@ -117,6 +94,12 @@ export default function Home() {
         const progress = ((currentQuestionIndex + 1) / quizData.length) * 100;
         const questionNumber = currentQuestionIndex + 1;
         const totalQuestions = quizData.length;
+        
+        let questionDescription = currentQuestion.description;
+        if (currentQuestion.id === 'q9') {
+          const timeAnswer = answers['Quanto tempo por dia você consegue se dedicar ao seu treino?'] || '20 minutos';
+          questionDescription = `Ótimo! Seus treinos serão adaptados para serem feitos Em casa em ${timeAnswer}/dia`;
+        }
 
         if (currentQuestion.type === 'measurement') {
           return (
@@ -141,7 +124,7 @@ export default function Home() {
         return (
           <QuizScreen
             key={currentQuestionIndex}
-            question={currentQuestion}
+            question={{...currentQuestion, description: questionDescription}}
             onAnswer={handleAnswer}
             progress={progress}
             questionNumber={questionNumber}
@@ -150,9 +133,7 @@ export default function Home() {
         );
       case "loading":
         const mainGoal = answers['Qual o seu principal objetivo ao iniciar este desafio?'] || "Secar gordura do corpo";
-        return <LoadingScreen mainGoal={mainGoal} onLoadingComplete={handleLoadingComplete} />;
-      case "redirecting":
-        return <RedirectingScreen />;
+        return <LoadingScreen mainGoal={mainGoal} onLoadingComplete={getRecommendation} />;
       case "results":
         return recommendation ? (
           <ResultScreen recommendation={recommendation} onRetake={handleReset} />

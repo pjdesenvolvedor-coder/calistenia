@@ -21,18 +21,14 @@ const loadingSteps = [
   { text: "Finalizando seu plano personalizado...", icon: BarChart, duration: 3.5 },
 ];
 
-const totalDuration = loadingSteps.reduce((acc, step) => acc + step.duration, 0);
-
 const carouselImages = actualPlaceholderData.placeholderImages.filter(img => img.id.startsWith('carousel-'));
 
 export function LoadingScreen({
   mainGoal,
   onLoadingComplete,
-  onFinalize,
 }: {
   mainGoal: string;
   onLoadingComplete: () => void;
-  onFinalize: () => void;
 }) {
   const [activeStep, setActiveStep] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -45,33 +41,38 @@ export function LoadingScreen({
   );
 
   useEffect(() => {
-    if (activeStep < loadingSteps.length) {
-      const stepDuration = loadingSteps[activeStep].duration * 1000;
-      let startTime: number | null = null;
-      let frameId: number;
+    let frameId: number;
+    let startTime: number | null = null;
+    const stepDuration = (loadingSteps[activeStep]?.duration || 0) * 1000;
 
-      const animate = (timestamp: number) => {
-        if (!startTime) startTime = timestamp;
-        const elapsedTime = timestamp - startTime;
-        const newProgress = Math.min((elapsedTime / stepDuration) * 100, 100);
-        setProgress(newProgress);
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const elapsedTime = timestamp - startTime;
+      const newProgress = Math.min((elapsedTime / stepDuration) * 100, 100);
+      setProgress(newProgress);
 
-        if (elapsedTime < stepDuration) {
-          frameId = requestAnimationFrame(animate);
-        } else {
+      if (elapsedTime < stepDuration) {
+        frameId = requestAnimationFrame(animate);
+      } else {
+        if (activeStep < loadingSteps.length - 1) {
           setActiveStep((prev) => prev + 1);
+        } else {
+          setIsComplete(true);
         }
-      };
+      }
+    };
 
-      frameId = requestAnimationFrame(animate);
-
-      return () => cancelAnimationFrame(frameId);
-    } else {
-      setIsComplete(true);
-      onLoadingCompleteRef.current();
+    if (!isComplete) {
+        frameId = requestAnimationFrame(animate);
     }
-  }, [activeStep]);
+    
+    return () => cancelAnimationFrame(frameId);
+  }, [activeStep, isComplete]);
   
+  const handleFinalize = () => {
+    onLoadingCompleteRef.current();
+  }
+
   const getStepProgress = (stepIndex: number) => {
     if (stepIndex < activeStep) return 100;
     if (stepIndex === activeStep) return progress;
@@ -83,7 +84,7 @@ export function LoadingScreen({
        <CardContent className="p-0 flex flex-col justify-between h-full min-h-[calc(100vh-2rem)] sm:min-h-[calc(100vh-4rem)] md:min-h-0 relative">
         {isComplete && (
             <div className="absolute inset-0 bg-black/50 backdrop-blur-sm z-30 flex items-center justify-center">
-                <Button onClick={onFinalize} size="lg" className="font-bold text-lg animate-in fade-in zoom-in-95">
+                <Button onClick={handleFinalize} size="lg" className="font-bold text-lg animate-in fade-in zoom-in-95">
                     FINALIZAR
                 </Button>
             </div>
@@ -106,7 +107,7 @@ export function LoadingScreen({
               return (
                 <div key={index} className={`space-y-1 text-left transition-opacity duration-300 ${isComplete || index <= activeStep ? 'opacity-100' : 'opacity-50'}`}>
                   <div className="flex items-center text-xs sm:text-sm font-medium text-foreground/80">
-                    {isDone ? (
+                    {isDone && !isActive ? (
                       <CheckCircle className="h-4 w-4 mr-2 text-green-500 shrink-0" />
                     ) : (
                       <Icon className={`h-4 w-4 mr-2 shrink-0 ${isActive ? 'animate-pulse' : ''}`} />
