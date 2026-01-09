@@ -181,37 +181,32 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
             <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-red-600 text-white px-6 py-1 rounded-full text-sm font-bold uppercase tracking-wider">
               Oferta por tempo limitado
             </div>
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div>
-                {getImage('product-bundle') && <Image src={getImage('product-bundle')?.imageUrl || ''} alt="Protocolo Calistenia" width={500} height={500} className="rounded-lg" data-ai-hint="product bundle" />}
+            <div className="text-gray-800">
+              <h2 className="text-2xl font-extrabold">PROTOCOLO CALISTENIA</h2>
+              <p className="text-brand-green font-bold text-lg">DEFINIÇÃO MUSCULAR</p>
+              
+              <ul className="space-y-2 mt-4 text-sm">
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-brand-green" /> Plano de Treino Personalizado</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-brand-green" /> Vídeo Aulas Completas</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-brand-green" /> Protocolo Alimentar Flexível</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-brand-green" /> Comunidade VIP de Alunos</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-brand-green" /> Suporte Individual</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-brand-green" /> Calendário de 28 Dias</li>
+              </ul>
+              <div className="my-6 text-center">
+                <p className="text-gray-500 line-through">DE R$297,00 POR:</p>
+                <p className="text-5xl font-extrabold text-brand-green">12x <span className="text-6xl">R$5,80</span></p>
+                <p className="text-gray-600 text-sm">ou R$58,00 à vista</p>
               </div>
-              <div className="text-gray-800">
-                <h2 className="text-2xl font-extrabold">PROTOCOLO CALISTENIA</h2>
-                <p className="text-brand-green font-bold text-lg">DEFINIÇÃO MUSCULAR</p>
-                
-                <ul className="space-y-2 mt-4 text-sm">
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-brand-green" /> Plano de Treino Personalizado</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-brand-green" /> Vídeo Aulas Completas</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-brand-green" /> Protocolo Alimentar Flexível</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-brand-green" /> Comunidade VIP de Alunos</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-brand-green" /> Suporte Individual</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-brand-green" /> Calendário de 28 Dias</li>
-                </ul>
-                <div className="my-6 text-center">
-                  <p className="text-gray-500 line-through">DE R$297,00 POR:</p>
-                  <p className="text-5xl font-extrabold text-brand-green">12x <span className="text-6xl">R$5,80</span></p>
-                  <p className="text-gray-600 text-sm">ou R$58,00 à vista</p>
-                </div>
-                <Button size="lg" className="w-full h-14 bg-brand-green hover:bg-brand-green-dark text-white text-xl font-bold animate-pulse-scale">
-                  <Zap className="w-6 h-6 mr-2"/>
-                  QUERO ACESSO IMEDIATO
-                </Button>
-                <div className="mt-4 text-center">
-                    {getImage('payment-methods') && <Image src={getImage('payment-methods')?.imageUrl || ''} alt="Payment methods" width={300} height={50} className="mx-auto" data-ai-hint="payment methods" />}
-                </div>
-                <div className="mt-4 text-xs text-gray-500 text-center flex items-center justify-center gap-2">
-                    <Lock className="w-3 h-3"/> Ambiente 100% seguro.
-                </div>
+              <Button size="lg" className="w-full h-14 bg-brand-green hover:bg-brand-green-dark text-white text-xl font-bold animate-pulse-scale">
+                <Zap className="w-6 h-6 mr-2"/>
+                QUERO ACESSO IMEDIATO
+              </Button>
+              <div className="mt-4 text-center">
+                  {getImage('payment-methods') && <Image src={getImage('payment-methods')?.imageUrl || ''} alt="Payment methods" width={300} height={50} className="mx-auto" data-ai-hint="payment methods" />}
+              </div>
+              <div className="mt-4 text-xs text-gray-500 text-center flex items-center justify-center gap-2">
+                  <Lock className="w-3 h-3"/> Ambiente 100% seguro.
               </div>
             </div>
           </div>
