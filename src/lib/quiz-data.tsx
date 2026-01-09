@@ -205,5 +205,15 @@ export const quizData: Question[] = [
       'Costas & Postura',
       'Corpo Todo',
     ],
+  },
+  {
+    id: 'q15',
+    question: 'Qual é o seu nível de comprometimento para mudar?',
+    answers: [
+      { text: 'Muito Empolgado!\nQuero iniciar logo e alcançar os objetivos que desejo!', emoji: '😎' },
+      { text: 'Empolgado!\nQuero iniciar para ver se gosto e consigo manter a rotina.', emoji: '😊' },
+      { text: 'Em Dúvida!\nAinda não tenho certeza mas quero experimentar.', emoji: '🤔' },
+      { text: 'Desanimado!\nVou me conformar pra sempre com o corpo que tenho.', emoji: '😫' },
+    ],
   }
 ];
