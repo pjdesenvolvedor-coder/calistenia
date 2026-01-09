@@ -8,7 +8,8 @@ import { ProductRecommendationOutput, recommendProduct } from "@/ai/flows/produc
 import { WelcomeScreen } from "@/components/quiz/welcome-screen";
 import { QuizScreen } from "@/components/quiz/quiz-screen";
 import { ResultScreen } from "@/components/quiz/result-screen";
-import { quizData } from "@/lib/quiz-data";
+import { quizData } from "@/lib/quiz-data.tsx";
+import { Logo } from "@/components/icons/logo";
 
 type QuizState = "welcome" | "in-progress" | "loading" | "results";
 type Answers = Record<string, string>;
@@ -74,7 +75,7 @@ export default function Home() {
         return (
           <div className="flex flex-col items-center justify-center text-center animate-in fade-in duration-500">
             <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-            <h2 className="text-2xl font-headline font-semibold text-primary-foreground/90">
+            <h2 className="text-2xl font-headline font-semibold text-foreground/90">
               Estamos preparando sua recomendação...
             </h2>
           </div>
@@ -89,9 +90,14 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-background p-4 sm:p-6 md:p-8">
-      <div className="w-full max-w-md mx-auto">
-        {renderContent()}
+    <main className="flex min-h-screen flex-col items-center justify-start bg-muted/30 p-4 sm:p-6 md:p-8">
+       <header className="w-full max-w-md mx-auto py-4">
+        <Logo />
+      </header>
+      <div className="flex flex-1 items-center justify-center w-full">
+        <div className="w-full max-w-md mx-auto">
+          {renderContent()}
+        </div>
       </div>
     </main>
   );
