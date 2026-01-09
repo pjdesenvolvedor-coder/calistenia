@@ -84,7 +84,7 @@ export function LoadingScreen({
        <CardContent className="p-0 flex flex-col justify-between h-full min-h-[calc(100vh-2rem)] sm:min-h-[calc(100vh-4rem)] md:min-h-0 relative">
         {isComplete && (
             <div className="absolute inset-0 bg-black/50 backdrop-blur-sm z-30 flex items-center justify-center">
-                <Button onClick={handleFinalize} size="lg" className="font-bold text-lg animate-in fade-in zoom-in-95 animate-pulse-scale">
+                <Button onClick={handleFinalize} size="lg" className="bg-green-500 hover:bg-green-600 text-black font-bold text-lg animate-in fade-in zoom-in-95 animate-pulse-scale">
                     FINALIZAR
                 </Button>
             </div>
