@@ -42,7 +42,7 @@ const recommendProductPrompt = ai.definePrompt({
 Based on the user's answers to the quiz questions, determine the most suitable product for them.
 
 Quiz Answers:
-{{#each (lookup quizAnswers)}}
+{{#each quizAnswers}}
   {{@key}}: {{this}}
 {{/each}}
 
