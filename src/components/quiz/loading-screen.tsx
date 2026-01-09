@@ -43,6 +43,7 @@ export function LoadingScreen({
     let frameId: number;
     let startTime: number | null = null;
     let stepStartTime: number | null = null;
+    let cumulativeDuration = 0;
 
     const totalDuration = loadingSteps.reduce((acc, step) => acc + step.duration, 0) * 1000;
     
@@ -53,24 +54,30 @@ export function LoadingScreen({
       }
       
       const elapsedTime = timestamp - startTime;
-      const elapsedSinceStepStart = timestamp - (stepStartTime ?? timestamp);
 
       const currentStepIndex = activeStep;
-      const currentStep = loadingSteps[currentStepIndex];
-
-      if (currentStep) {
-        const stepDuration = currentStep.duration * 1000;
-        const stepProgress = Math.min((elapsedSinceStepStart / stepDuration) * 100, 100);
-        setProgress(stepProgress);
-
-        if (elapsedSinceStepStart >= stepDuration) {
-          if (currentStepIndex < loadingSteps.length - 1) {
-            setActiveStep(prev => prev + 1);
-            stepStartTime = timestamp; // Reset step start time for the new step
-          }
-        }
+      if (currentStepIndex >= loadingSteps.length) {
+          onLoadingCompleteRef.current();
+          return;
       }
+      const currentStep = loadingSteps[currentStepIndex];
+      const stepDuration = currentStep.duration * 1000;
+      const elapsedSinceStepStart = timestamp - (stepStartTime ?? timestamp);
 
+      const stepProgress = Math.min((elapsedSinceStepStart / stepDuration) * 100, 100);
+      setProgress(stepProgress);
+
+      if (elapsedSinceStepStart >= stepDuration) {
+          if (currentStepIndex < loadingSteps.length - 1) {
+              setActiveStep(prev => prev + 1);
+              stepStartTime = (stepStartTime ?? 0) + stepDuration;
+          } else {
+              setProgress(100);
+              onLoadingCompleteRef.current();
+              return; 
+          }
+      }
+      
       if (elapsedTime >= totalDuration) {
         setProgress(100);
         setActiveStep(loadingSteps.length -1);
