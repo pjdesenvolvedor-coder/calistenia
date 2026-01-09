@@ -24,7 +24,7 @@ const loadingSteps = [
 const carouselImages = placeholderData.placeholderImages.filter(img => img.id.startsWith('carousel-'));
 
 
-export function LoadingScreen({ mainGoal, onLoadingComplete, answers }: { mainGoal: string, onLoadingComplete: (answers: any) => void, answers: any }) {
+export function LoadingScreen({ mainGoal, onLoadingComplete }: { mainGoal: string, onLoadingComplete: () => void }) {
   const [progress, setProgress] = useState<{ [key: number]: number }>({});
   const [done, setDone] = useState<number[]>([]);
   const onLoadingCompleteRef = useRef(onLoadingComplete);
@@ -57,7 +57,7 @@ export function LoadingScreen({ mainGoal, onLoadingComplete, answers }: { mainGo
     });
 
     const finalTimeout = setTimeout(() => {
-        onLoadingCompleteRef.current(answers);
+        onLoadingCompleteRef.current();
     }, totalDuration + 100); // Add a small buffer
     timeouts.push(finalTimeout);
 
@@ -65,7 +65,7 @@ export function LoadingScreen({ mainGoal, onLoadingComplete, answers }: { mainGo
         timeouts.forEach(clearTimeout);
         intervals.forEach(clearInterval);
     };
-  }, [answers]);
+  }, []);
 
   return (
     <Card className="w-full max-w-md mx-auto p-4 sm:p-6 text-center animate-in fade-in zoom-in-95 duration-500 overflow-hidden">

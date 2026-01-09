@@ -49,14 +49,13 @@ export default function Home() {
     if (currentQuestionIndex < quizData.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      finishQuiz(currentAnswers);
+      setQuizState("loading");
     }
   }
-
-  const finishQuiz = async (finalAnswers: Answers) => {
-    setQuizState("loading");
+  
+  const handleLoadingComplete = async () => {
     try {
-      const result = await recommendProduct({ quizAnswers: finalAnswers });
+      const result = await recommendProduct({ quizAnswers: answers });
       setRecommendation(result);
     } catch (error) {
       console.error("Failed to get recommendation", error);
@@ -67,30 +66,30 @@ export default function Home() {
       });
       handleReset();
     }
-  }
+  };
 
   useEffect(() => {
-    if (quizState === 'loading' && recommendation) {
-      const showResults = async () => {
-        // Show toast
-        toast({
-          title: "Tudo pronto!",
-          description: "Encontramos o treino ideal para você.",
-        });
-  
-        // Change state to "redirecting"
-        setQuizState("redirecting");
-  
-        // Wait 3 seconds on the redirecting screen
-        await new Promise(resolve => setTimeout(resolve, 3000));
-  
-        // Finally, go to results
-        setQuizState("results");
-      };
-      
-      showResults();
-    }
-  }, [quizState, recommendation, toast]);
+    if (quizState === 'loading' || !recommendation) return;
+
+    const showResults = async () => {
+      // Show toast
+      toast({
+        title: "Tudo pronto!",
+        description: "Encontramos o treino ideal para você.",
+      });
+
+      // Change state to "redirecting"
+      setQuizState("redirecting");
+
+      // Wait 3 seconds on the redirecting screen
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+      // Finally, go to results
+      setQuizState("results");
+    };
+    
+    showResults();
+  }, [recommendation]); // Run only when recommendation is ready
 
 
   const handleReset = () => {
@@ -145,7 +144,7 @@ export default function Home() {
         );
       case "loading":
         const mainGoal = answers['Qual o seu principal objetivo ao iniciar este desafio?'] || "Secar gordura do corpo";
-        return <LoadingScreen mainGoal={mainGoal} onLoadingComplete={finishQuiz} answers={answers} />;
+        return <LoadingScreen mainGoal={mainGoal} onLoadingComplete={handleLoadingComplete} />;
       case "redirecting":
         return <RedirectingScreen />;
       case "results":
