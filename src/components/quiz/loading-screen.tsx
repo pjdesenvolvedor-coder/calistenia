@@ -34,45 +34,47 @@ export function LoadingScreen({
 }) {
   const [activeStep, setActiveStep] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [showFinalizeButton, setShowFinalizeButton] = useState(false);
   const onLoadingCompleteRef = useRef(onLoadingComplete);
   onLoadingCompleteRef.current = onLoadingComplete;
 
-  const autoplayPlugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: false, stopOnMouseEnter: false }));
+  const autoplayPlugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: false }));
 
   useEffect(() => {
     let frameId: number;
     let startTime: number | null = null;
+    const totalDuration = loadingSteps.reduce((acc, step) => acc + step.duration, 0) * 1000;
     const stepDuration = (loadingSteps[activeStep]?.duration || 0) * 1000;
-
+    let elapsedSinceStepStart = 0;
+    
     const animate = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
+      
       const elapsedTime = timestamp - startTime;
-      const newProgress = Math.min((elapsedTime / stepDuration) * 100, 100);
-      setProgress(newProgress);
+      elapsedSinceStepStart = elapsedTime - loadingSteps.slice(0, activeStep).reduce((acc, s) => acc + s.duration * 1000, 0);
 
-      if (elapsedTime < stepDuration) {
+      const currentStep = loadingSteps[activeStep];
+      if (currentStep) {
+        const stepProgress = Math.min((elapsedSinceStepStart / (currentStep.duration * 1000)) * 100, 100);
+        setProgress(stepProgress);
+      }
+
+      if (elapsedTime < totalDuration) {
+         if (elapsedSinceStepStart >= (currentStep?.duration || 0) * 1000) {
+           setActiveStep(prev => Math.min(prev + 1, loadingSteps.length -1));
+         }
         frameId = requestAnimationFrame(animate);
       } else {
-        if (activeStep < loadingSteps.length - 1) {
-          setActiveStep((prev) => prev + 1);
-        } else {
-          onLoadingCompleteRef.current();
-          setShowFinalizeButton(true);
-        }
+        setProgress(100);
+        setActiveStep(loadingSteps.length - 1);
+        onLoadingCompleteRef.current();
       }
     };
 
-    if (!showFinalizeButton) {
-        frameId = requestAnimationFrame(animate);
-    }
+    frameId = requestAnimationFrame(animate);
     
     return () => cancelAnimationFrame(frameId);
-  }, [activeStep, showFinalizeButton]);
+  }, [activeStep]);
   
-  const handleFinalize = () => {
-    onLoadingCompleteRef.current();
-  }
 
   const getStepProgress = (stepIndex: number) => {
     if (stepIndex < activeStep) return 100;
@@ -85,13 +87,6 @@ export function LoadingScreen({
   return (
     <Card className="w-full max-w-md mx-auto p-4 sm:p-6 text-center animate-in fade-in zoom-in-95 duration-500 overflow-hidden">
        <CardContent className="p-0 flex flex-col justify-between h-full min-h-[calc(100vh-2rem)] sm:min-h-[calc(100vh-4rem)] md:min-h-0 relative">
-        {showFinalizeButton && (
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm z-30 flex items-center justify-center">
-                <Button onClick={handleFinalize} size="lg" className="bg-green-500 hover:bg-green-600 text-black font-bold text-lg animate-pulse-scale">
-                    FINALIZAR
-                </Button>
-            </div>
-        )}
         <div className="flex-shrink-0">
           <div className="bg-primary/10 text-primary border border-primary/20 rounded-lg py-2 px-3 mb-4">
             <p className="font-semibold text-sm sm:text-base">

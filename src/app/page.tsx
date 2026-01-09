@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { ProductRecommendationOutput, recommendProduct } from "@/ai/flows/product-recommendation";
+import { ProductRecommendationOutput } from "@/ai/flows/product-recommendation";
 
 import { WelcomeScreen } from "@/components/quiz/welcome-screen";
 import { QuizScreen } from "@/components/quiz/quiz-screen";
@@ -11,7 +11,6 @@ import { MeasurementScreen } from "@/components/quiz/measurement-screen";
 import { CheckboxQuestionScreen } from "@/components/quiz/checkbox-question-screen";
 import { quizData } from "@/lib/quiz-data";
 import { LoadingScreen } from "@/components/quiz/loading-screen";
-import { RedirectingScreen } from "@/components/quiz/redirecting-screen";
 
 type QuizState = "welcome" | "in-progress" | "loading" | "results";
 type Answers = Record<string, string>;
@@ -22,7 +21,6 @@ export default function Home() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [recommendation, setRecommendation] = useState<ProductRecommendationOutput | null>(null);
   const { toast } = useToast();
-  const recommendationFlowStarted = useRef(false);
 
   const handleStart = () => {
     setQuizState("in-progress");
@@ -33,7 +31,6 @@ export default function Home() {
     setCurrentQuestionIndex(0);
     setRecommendation(null);
     setQuizState("welcome");
-    recommendationFlowStarted.current = false;
   };
 
   const advanceToNextQuestion = useCallback(() => {
@@ -62,24 +59,15 @@ export default function Home() {
     advanceToNextQuestion();
   };
   
-  const getRecommendation = useCallback(async () => {
-    if (recommendationFlowStarted.current) return;
-    recommendationFlowStarted.current = true;
-
-    try {
-      const result = await recommendProduct({ quizAnswers: answers });
-      setRecommendation(result);
-      setQuizState("results");
-    } catch (error) {
-      console.error("Failed to get recommendation", error);
-      toast({
-        title: "Erro",
-        description: "Não foi possível obter a sua recomendação. Por favor, tente novamente.",
-        variant: "destructive",
-      });
-      handleReset(); 
-    }
-  }, [answers, toast]);
+  // This function now provides a static recommendation to bypass the AI flow.
+  const getRecommendation = useCallback(() => {
+    const staticRecommendation: ProductRecommendationOutput = {
+      recommendedProduct: "Definição Muscular",
+      reasoning: "Com base nas suas respostas, seu objetivo é secar gordura e definir o corpo."
+    };
+    setRecommendation(staticRecommendation);
+    setQuizState("results");
+  }, []);
 
 
   const renderContent = () => {
