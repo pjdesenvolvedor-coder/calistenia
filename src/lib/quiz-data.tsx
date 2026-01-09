@@ -167,6 +167,16 @@ export const quizData: Question[] = [
     ],
   },
   {
+    id: 'q12',
+    question: 'Como você se imagina após os 28 Dias do Desafio?',
+    answers: [
+      { text: 'Me olhar no espelho e ficar feliz com o que vejo!', emoji: '😊' },
+      { text: 'Ter energia para meus dias renderem mais!', emoji: '⚡️' },
+      { text: 'Dormir melhor sem sofrer com insônias e acordar cansado!', emoji: '😴' },
+      { text: 'Aumentar minha força para tarefas físicas!', emoji: '💪' },
+    ],
+  },
+  {
     id: "q11",
     type: 'measurement',
     question: "Se souber, informe seu peso e altura.",
