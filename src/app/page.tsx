@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ProductRecommendationOutput, recommendProduct } from "@/ai/flows/product-recommendation";
 
@@ -11,6 +10,7 @@ import { ResultScreen } from "@/components/quiz/result-screen";
 import { MeasurementScreen } from "@/components/quiz/measurement-screen";
 import { CheckboxQuestionScreen } from "@/components/quiz/checkbox-question-screen";
 import { quizData } from "@/lib/quiz-data.tsx";
+import { LoadingScreen } from "@/components/quiz/loading-screen";
 
 type QuizState = "welcome" | "in-progress" | "loading" | "results";
 type Answers = Record<string, string>;
@@ -55,6 +55,8 @@ export default function Home() {
   const finishQuiz = async (finalAnswers: Answers) => {
     setQuizState("loading");
     try {
+      // Simulate a delay to show the loading screen
+      await new Promise(resolve => setTimeout(resolve, 5000));
       const result = await recommendProduct({ quizAnswers: finalAnswers });
       setRecommendation(result);
       setQuizState("results");
@@ -120,14 +122,8 @@ export default function Home() {
           />
         );
       case "loading":
-        return (
-          <div className="flex flex-col items-center justify-center text-center animate-in fade-in duration-500">
-            <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-            <h2 className="text-2xl font-headline font-semibold text-foreground/90">
-              Estamos preparando sua recomendação...
-            </h2>
-          </div>
-        );
+        const mainGoal = answers['Qual o seu principal objetivo ao iniciar este desafio?'] || "Secar gordura do corpo";
+        return <LoadingScreen mainGoal={mainGoal} />;
       case "results":
         return recommendation ? (
           <ResultScreen recommendation={recommendation} onRetake={handleReset} />
