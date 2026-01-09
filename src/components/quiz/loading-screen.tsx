@@ -42,32 +42,43 @@ export function LoadingScreen({
   useEffect(() => {
     let frameId: number;
     let startTime: number | null = null;
+    let stepStartTime: number | null = null;
+
     const totalDuration = loadingSteps.reduce((acc, step) => acc + step.duration, 0) * 1000;
-    const stepDuration = (loadingSteps[activeStep]?.duration || 0) * 1000;
-    let elapsedSinceStepStart = 0;
     
     const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
+      if (!startTime) {
+        startTime = timestamp;
+        stepStartTime = timestamp;
+      }
       
       const elapsedTime = timestamp - startTime;
-      elapsedSinceStepStart = elapsedTime - loadingSteps.slice(0, activeStep).reduce((acc, s) => acc + s.duration * 1000, 0);
+      const elapsedSinceStepStart = timestamp - (stepStartTime ?? timestamp);
 
-      const currentStep = loadingSteps[activeStep];
+      const currentStepIndex = activeStep;
+      const currentStep = loadingSteps[currentStepIndex];
+
       if (currentStep) {
-        const stepProgress = Math.min((elapsedSinceStepStart / (currentStep.duration * 1000)) * 100, 100);
+        const stepDuration = currentStep.duration * 1000;
+        const stepProgress = Math.min((elapsedSinceStepStart / stepDuration) * 100, 100);
         setProgress(stepProgress);
+
+        if (elapsedSinceStepStart >= stepDuration) {
+          if (currentStepIndex < loadingSteps.length - 1) {
+            setActiveStep(prev => prev + 1);
+            stepStartTime = timestamp; // Reset step start time for the new step
+          }
+        }
       }
 
-      if (elapsedTime < totalDuration) {
-         if (elapsedSinceStepStart >= (currentStep?.duration || 0) * 1000) {
-           setActiveStep(prev => Math.min(prev + 1, loadingSteps.length -1));
-         }
-        frameId = requestAnimationFrame(animate);
-      } else {
+      if (elapsedTime >= totalDuration) {
         setProgress(100);
-        setActiveStep(loadingSteps.length - 1);
+        setActiveStep(loadingSteps.length -1);
         onLoadingCompleteRef.current();
+        return; 
       }
+      
+      frameId = requestAnimationFrame(animate);
     };
 
     frameId = requestAnimationFrame(animate);
