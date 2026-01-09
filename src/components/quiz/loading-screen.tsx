@@ -13,7 +13,9 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { CheckCircle, Target, Settings, Award, BarChart } from "lucide-react";
-import placeholderData from "@/lib/placeholder-images.json";
+import type placeholderData from "@/lib/placeholder-images.json";
+import actualPlaceholderData from "@/lib/placeholder-images.json";
+
 
 const loadingSteps = [
   { text: "Analisando seus objetivos...", icon: Target, duration: 2.5 },
@@ -24,7 +26,7 @@ const loadingSteps = [
 
 const totalDuration = loadingSteps.reduce((acc, step) => acc + step.duration, 0);
 
-const carouselImages = placeholderData.placeholderImages.filter(img => img.id.startsWith('carousel-'));
+const carouselImages = actualPlaceholderData.placeholderImages.filter(img => img.id.startsWith('carousel-'));
 
 
 export function LoadingScreen({ mainGoal, onLoadingComplete }: { mainGoal: string, onLoadingComplete: () => void }) {
