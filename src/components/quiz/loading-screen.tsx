@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import Autoplay from "embla-carousel-autoplay";
@@ -12,7 +12,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { CheckCircle, Target, Settings, Award, BarChart, Loader2 } from "lucide-react";
+import { CheckCircle, Target, Settings, Award, BarChart } from "lucide-react";
 import actualPlaceholderData from "@/lib/placeholder-images.json";
 import { Button } from "@/components/ui/button";
 
@@ -34,11 +34,11 @@ export function LoadingScreen({
 }) {
   const [activeStep, setActiveStep] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [isComplete, setIsComplete] = useState(false);
+  const [showFinalizeButton, setShowFinalizeButton] = useState(false);
   const onLoadingCompleteRef = useRef(onLoadingComplete);
   onLoadingCompleteRef.current = onLoadingComplete;
 
-  const autoplayPlugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
+  const autoplayPlugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: false, stopOnMouseEnter: false }));
 
   useEffect(() => {
     let frameId: number;
@@ -57,17 +57,18 @@ export function LoadingScreen({
         if (activeStep < loadingSteps.length - 1) {
           setActiveStep((prev) => prev + 1);
         } else {
-          setIsComplete(true);
+          onLoadingCompleteRef.current();
+          setShowFinalizeButton(true);
         }
       }
     };
 
-    if (!isComplete) {
+    if (!showFinalizeButton) {
         frameId = requestAnimationFrame(animate);
     }
     
     return () => cancelAnimationFrame(frameId);
-  }, [activeStep, isComplete]);
+  }, [activeStep, showFinalizeButton]);
   
   const handleFinalize = () => {
     onLoadingCompleteRef.current();
@@ -78,11 +79,13 @@ export function LoadingScreen({
     if (stepIndex === activeStep) return progress;
     return 0;
   };
+  
+  const isComplete = activeStep === loadingSteps.length - 1 && progress >= 100;
 
   return (
     <Card className="w-full max-w-md mx-auto p-4 sm:p-6 text-center animate-in fade-in zoom-in-95 duration-500 overflow-hidden">
        <CardContent className="p-0 flex flex-col justify-between h-full min-h-[calc(100vh-2rem)] sm:min-h-[calc(100vh-4rem)] md:min-h-0 relative">
-        {isComplete && (
+        {showFinalizeButton && (
             <div className="absolute inset-0 bg-black/50 backdrop-blur-sm z-30 flex items-center justify-center">
                 <Button onClick={handleFinalize} size="lg" className="bg-green-500 hover:bg-green-600 text-black font-bold text-lg animate-pulse-scale">
                     FINALIZAR
@@ -128,8 +131,6 @@ export function LoadingScreen({
             <Carousel 
               className="w-full max-w-[200px] sm:max-w-xs mx-auto"
               plugins={[autoplayPlugin.current]}
-              onMouseEnter={autoplayPlugin.current.stop}
-              onMouseLeave={autoplayPlugin.current.reset}
               opts={{
                 loop: true,
               }}
