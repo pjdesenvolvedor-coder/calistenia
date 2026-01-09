@@ -164,6 +164,16 @@ export const quizData: Question[] = [
     answers: [],
   },
   {
+    id: "q10",
+    question: "Você tem alguma lesão ou limitação física?",
+    answers: [
+      "Não tenho nenhuma",
+      "Dor nas costas",
+      "Dor nos ombros",
+      "Dor nos joelhos",
+    ],
+  },
+  {
     id: 'q12',
     question: 'Como você se imagina após os 28 Dias do Desafio?',
     answers: [
@@ -194,16 +204,6 @@ export const quizData: Question[] = [
       'Pernas',
       'Costas & Postura',
       'Corpo Todo',
-    ],
-  },
-  {
-    id: "q10",
-    question: "Você tem alguma lesão ou limitação física?",
-    answers: [
-      "Não tenho nenhuma",
-      "Dor nas costas",
-      "Dor nos ombros",
-      "Dor nos joelhos",
     ],
   }
 ];
