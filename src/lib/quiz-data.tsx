@@ -18,7 +18,7 @@ export const MaleIcon = (props: LucideProps) => (
 );
 
 export const FemaleIcon = (props: LucideProps) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M14.5 9.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm0 6.125a.75.75 0 0 1-.75.75h-3.5a.75.75 0 0 1 0-1.5h3.5a.75.75 0 0 1 .75.75ZM12 2a5 5 0 0 0-5 5v2.375a.75.75 0 0 1-1.5 0V7a6.5 6.5 0 0 1 13 0v2.375a.75.75 0 0 1-1.5 0V7a5 5 0 0 0-5-5Zm6.5 11.25a.75.75 0 0 0-1.5 0V14.5A5.506 5.506 0 0 1 12 20a5.506 5.506 0 0 1-5.5-5.5v-1.25a.75.75 0 0 0-1.5 0V14.5A7.008 7.008 0 0 0 12 21.5a7.008 7.008 0 0 0 7.083-6.917l-.583-.083Z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="4" /><path d="M12 16v6" /><path d="M9 19h6" /></svg>
 );
 
 export const quizData: Question[] = [
@@ -81,6 +81,17 @@ export const quizData: Question[] = [
       { text: "Ter um passo a passo simples que eu consiga seguir.", emoji: "🤗" },
       { text: "Poder treinar em casa sem precisar de equipamentos.", emoji: "😎" },
       { text: "Ter um desafio que me faça seguir firme e animado.", emoji: "💪" },
+    ],
+  },
+  {
+    id: "q6",
+    question: "Quanto tempo por dia você consegue se dedicar ao seu treino?",
+    description: "👍 Perfeito, isso nos ajuda a montar o plano ideal para você.",
+    answers: [
+      "15 minutos",
+      "20 minutos",
+      "30 minutos",
+      "1 hora",
     ],
   },
 ];
