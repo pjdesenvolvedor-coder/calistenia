@@ -158,6 +158,16 @@ export const quizData: Question[] = [
   },
   {
     id: "q10",
+    question: "Você tem alguma lesão ou limitação física?",
+    answers: [
+      "Não tenho nenhuma",
+      "Dor nas costas",
+      "Dor nos ombros",
+      "Dor nos joelhos",
+    ],
+  },
+  {
+    id: "q11",
     type: 'measurement',
     question: "Se souber, informe seu peso e altura.",
     description: "Para uma estimativa de gasto calórico ainda mais precisa...",
