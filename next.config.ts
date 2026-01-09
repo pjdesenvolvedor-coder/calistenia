@@ -52,6 +52,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.calistenianow.com.br',
+        port: '',
+        pathname: '/**',
+      }
     ],
   },
 };

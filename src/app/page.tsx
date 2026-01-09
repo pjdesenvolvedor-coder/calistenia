@@ -9,7 +9,7 @@ import { QuizScreen } from "@/components/quiz/quiz-screen";
 import { ResultScreen } from "@/components/quiz/result-screen";
 import { MeasurementScreen } from "@/components/quiz/measurement-screen";
 import { CheckboxQuestionScreen } from "@/components/quiz/checkbox-question-screen";
-import { quizData } from "@/lib/quiz-data.tsx";
+import { quizData } from "@/lib/quiz-data";
 import { LoadingScreen } from "@/components/quiz/loading-screen";
 import { RedirectingScreen } from "@/components/quiz/redirecting-screen";
 
@@ -143,9 +143,17 @@ export default function Home() {
     }
   };
 
+  const mainClass = quizState === "results" 
+    ? "w-full"
+    : "flex min-h-screen flex-col items-center justify-center bg-background p-4 sm:p-6 md:p-8";
+
+  const containerClass = quizState === "results"
+    ? "w-full"
+    : "w-full max-w-md mx-auto";
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-background p-4 sm:p-6 md:p-8">
-      <div className="w-full max-w-md mx-auto">
+    <main className={mainClass}>
+      <div className={containerClass}>
         {renderContent()}
       </div>
     </main>

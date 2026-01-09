@@ -28,6 +28,11 @@ body {
     --input: 220 13% 91%;
     --ring: 220 90% 55%;
     --radius: 0.8rem;
+
+    --brand-green: 142 76% 40%;
+    --brand-green-dark: 142 80% 30%;
+    --brand-red: 0 72% 51%;
+    --brand-blue: 210 100% 56%;
   }
   .dark {
     --background: 224 71% 4%;
@@ -54,6 +59,11 @@ body {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
+    --brand-green: 142 76% 40%;
+    --brand-green-dark: 142 80% 30%;
+    --brand-red: 0 72% 51%;
+    --brand-blue: 210 100% 56%;
   }
 }
 
