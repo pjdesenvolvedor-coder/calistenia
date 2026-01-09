@@ -75,19 +75,13 @@ export default function Home() {
 
   useEffect(() => {
     if (quizState === 'loading' && !isRecommendationFlowStarted) {
-      handleLoadingComplete();
+      // This is now handled by the onLoadingComplete callback from LoadingScreen
     }
   }, [quizState, isRecommendationFlowStarted, handleLoadingComplete]);
 
   useEffect(() => {
     if (recommendation) {
       const showResults = async () => {
-        // Show toast
-        toast({
-          title: "Tudo pronto!",
-          description: "Encontramos o treino ideal para você.",
-        });
-
         // Change state to "redirecting"
         setQuizState("redirecting");
 
@@ -100,7 +94,7 @@ export default function Home() {
       
       showResults();
     }
-  }, [recommendation, toast]);
+  }, [recommendation]);
 
 
   const handleReset = () => {
