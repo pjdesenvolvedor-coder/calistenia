@@ -91,7 +91,7 @@ export function QuizScreen({
       </div>
       <Card className="w-full max-w-md mx-auto bg-card border-border shadow-lg">
         <CardHeader>
-          <CardDescription className="text-accent font-semibold">
+          <CardDescription className="text-primary font-semibold">
             Pergunta {questionNumber} de {totalQuestions}
           </CardDescription>
           <CardTitle className="font-headline text-3xl font-black uppercase !leading-tight text-foreground/90">
