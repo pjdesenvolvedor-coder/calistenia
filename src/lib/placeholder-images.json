@@ -32,26 +32,26 @@
     },
     {
       "id": "carousel-1",
-      "description": "Before and after fitness transformation, side view.",
-      "imageUrl": "https://images.unsplash.com/photo-1760386786133-883d56ec060a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxmaXRuZXNzJTIwdHJhbnNmb3JtYXRpb258ZW58MHx8fHwxNzY3OTQyNjAzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Before and after fitness transformation of a woman.",
+      "imageUrl": "https://extra.globo.com/incoming/14954714-7b4-896/w533h800/barbaraad.jpg",
       "imageHint": "fitness transformation"
     },
     {
       "id": "carousel-2",
-      "description": "Before and after weight loss transformation of a woman.",
-      "imageUrl": "https://images.unsplash.com/photo-1604480132715-bd70038b74df?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx3ZWlnaHQlMjBsb3NzfGVufDB8fHx8MTc2Nzk0MjYwM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Before and after weight loss transformation of a man.",
+      "imageUrl": "https://i.pinimg.com/474x/a7/83/f2/a783f22aa9128b846331dae6cc27730d.jpg",
       "imageHint": "weight loss"
     },
     {
       "id": "carousel-3",
-      "description": "Fitness progress shown in two photos.",
-      "imageUrl": "https://images.unsplash.com/photo-1738524108211-9b2bbb179024?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmaXRuZXNzJTIwcHJvZ3Jlc3N8ZW58MHx8fHwxNzY3OTI1MzM5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Fitness progress shown in two photos of a man.",
+      "imageUrl": "https://i.pinimg.com/736x/63/cf/fe/63cffefc12eedc0d98484847bc0cfb25.jpg",
       "imageHint": "fitness progress"
     },
     {
       "id": "carousel-4",
-      "description": "Woman's body transformation before and after.",
-      "imageUrl": "https://images.unsplash.com/photo-1724763750965-e61e1fe6a540?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxib2R5JTIwdHJhbnNmb3JtYXRpb258ZW58MHx8fHwxNzY3ODk3NDczfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Man's body transformation before and after.",
+      "imageUrl": "https://www.belezamasculina.com.br/y/5018/antes-depois-720.jpg",
       "imageHint": "body transformation"
     }
   ]

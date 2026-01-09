@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import Autoplay from "embla-carousel-autoplay";
 import {
   Carousel,
   CarouselContent,
@@ -31,6 +32,10 @@ export function LoadingScreen({ mainGoal, onLoadingComplete }: { mainGoal: strin
   const onLoadingCompleteRef = useRef(onLoadingComplete);
   onLoadingCompleteRef.current = onLoadingComplete;
 
+  const autoplayPlugin = useRef(
+    Autoplay({ delay: 2000, stopOnInteraction: true })
+  );
+
   useEffect(() => {
     let frameId: number;
     const startTime = Date.now();
@@ -43,6 +48,7 @@ export function LoadingScreen({ mainGoal, onLoadingComplete }: { mainGoal: strin
       if (elapsedTime < totalDuration) {
         frameId = requestAnimationFrame(animate);
       } else {
+        setProgress(100);
         onLoadingCompleteRef.current();
       }
     };
@@ -69,16 +75,16 @@ export function LoadingScreen({ mainGoal, onLoadingComplete }: { mainGoal: strin
           <div className="space-y-3 mb-4">
             {loadingSteps.map((step, index) => {
               const stepStartTime = cumulativeDuration;
-              const stepEndTime = cumulativeDuration + step.duration;
-              cumulativeDuration = stepEndTime;
-
+              cumulativeDuration += step.duration; // Update cumulativeDuration for the next iteration
+              const stepEndTime = cumulativeDuration;
+              
               let stepProgress;
               if (elapsedTotalTime >= stepEndTime) {
-                stepProgress = 100;
+                  stepProgress = 100;
               } else if (elapsedTotalTime < stepStartTime) {
-                stepProgress = 0;
+                  stepProgress = 0;
               } else {
-                stepProgress = ((elapsedTotalTime - stepStartTime) / step.duration) * 100;
+                  stepProgress = ((elapsedTotalTime - stepStartTime) / step.duration) * 100;
               }
               const isDone = stepProgress >= 100;
               const Icon = step.icon;
@@ -104,7 +110,12 @@ export function LoadingScreen({ mainGoal, onLoadingComplete }: { mainGoal: strin
         </div>
 
         <div className="flex-grow flex items-center justify-center my-4">
-            <Carousel className="w-full max-w-[200px] sm:max-w-xs mx-auto">
+            <Carousel 
+              className="w-full max-w-[200px] sm:max-w-xs mx-auto"
+              plugins={[autoplayPlugin.current]}
+              onMouseEnter={() => autoplayPlugin.current.stop()}
+              onMouseLeave={() => autoplayPlugin.current.reset()}
+            >
               <CarouselContent>
                 {carouselImages.map((image) => (
                   <CarouselItem key={image.id}>
