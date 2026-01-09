@@ -174,10 +174,6 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
               );
             })}
           </div>
-          <div className="mt-10">
-            <h3 className="text-2xl font-bold">Treine Online e queime gordura em Menos de 30 Minutos por Dia!</h3>
-            <p className="mt-2 text-gray-600">Acesse nossa plataforma de treinos em vídeo do seu celular, tablet ou computador.</p>
-          </div>
         </div>
       </section>
       
@@ -185,8 +181,8 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
       <section id="oferta" className="py-16 px-4 bg-gray-100">
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-10 border-4 border-green-500 relative">
-            <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-red-600 text-white px-6 py-1 rounded-full text-sm font-bold uppercase tracking-wider">
-              Oferta por tempo limitado
+            <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-red-600 text-white px-6 py-2 rounded-full text-sm font-bold uppercase tracking-wider whitespace-nowrap">
+              Tempo Limitado
             </div>
             <div className="text-center pt-8">
               <h2 className="text-2xl font-extrabold">PROTOCOLO CALISTENIA</h2>
