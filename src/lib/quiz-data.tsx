@@ -39,4 +39,15 @@ export const quizData: Question[] = [
         "+50 anos",
     ],
   },
+  {
+    id: "q2",
+    question: "Qual o seu principal objetivo ao iniciar este desafio?",
+    description: "Isso nos ajuda a definir o melhor protocolo de treino para alcançar seu principal objetivo",
+    answers: [
+      "Secar gordura do corpo",
+      "Construir mais músculos",
+      "Aumentar a disposição",
+      "Eliminar dores no corpo",
+    ],
+  },
 ];
