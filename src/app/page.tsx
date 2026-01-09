@@ -39,7 +39,12 @@ export default function Home() {
   const handleMeasurementSubmit = (measurements: Record<string, string>) => {
     const newAnswers = { ...answers, ...measurements };
     setAnswers(newAnswers);
-    finishQuiz(newAnswers);
+    
+    if (currentQuestionIndex < quizData.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else {
+      finishQuiz(newAnswers);
+    }
   };
   
   const finishQuiz = async (finalAnswers: Answers) => {
