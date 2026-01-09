@@ -28,12 +28,12 @@ export function QuizScreen({
         </p>
         <Progress value={progress} aria-label={`${Math.round(progress)}% completo`} />
       </div>
-      <Card className="w-full max-w-md mx-auto bg-transparent border-border">
+      <Card className="w-full max-w-md mx-auto bg-card border-border shadow-lg">
         <CardHeader>
           <CardDescription className="text-accent font-semibold">
             Pergunta {questionNumber} de {totalQuestions}
           </CardDescription>
-          <CardTitle className="font-headline text-3xl font-black uppercase">
+          <CardTitle className="font-headline text-3xl font-black uppercase !leading-tight text-foreground/90">
             {question.question}
           </CardTitle>
         </CardHeader>
