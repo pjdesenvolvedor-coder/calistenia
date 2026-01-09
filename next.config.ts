@@ -57,6 +57,12 @@ const nextConfig: NextConfig = {
         hostname: 'www.calistenianow.com.br',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'planocalistenico.online',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
