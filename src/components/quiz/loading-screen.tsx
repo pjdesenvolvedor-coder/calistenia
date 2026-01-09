@@ -36,9 +36,7 @@ export function LoadingScreen({
   const onLoadingCompleteRef = useRef(onLoadingComplete);
   onLoadingCompleteRef.current = onLoadingComplete;
 
-  const autoplayPlugin = useRef(
-    Autoplay({ delay: 2000, stopOnInteraction: true })
-  );
+  const autoplayPlugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
 
   useEffect(() => {
     let frameId: number;
@@ -128,8 +126,8 @@ export function LoadingScreen({
             <Carousel 
               className="w-full max-w-[200px] sm:max-w-xs mx-auto"
               plugins={[autoplayPlugin.current]}
-              onMouseEnter={() => autoplayPlugin.current.stop()}
-              onMouseLeave={() => autoplayPlugin.current.reset()}
+              onMouseEnter={autoplayPlugin.current.stop}
+              onMouseLeave={autoplayPlugin.current.reset}
             >
               <CarouselContent>
                 {carouselImages.map((image) => (
