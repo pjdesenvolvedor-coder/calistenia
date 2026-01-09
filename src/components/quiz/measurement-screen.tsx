@@ -6,13 +6,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Question } from "@/lib/quiz-data";
+import { Progress } from "@/components/ui/progress";
 
 type MeasurementScreenProps = {
   question: Question;
   onSubmit: (measurements: Record<string, string>) => void;
+  progress: number;
 };
 
-export function MeasurementScreen({ question, onSubmit }: MeasurementScreenProps) {
+export function MeasurementScreen({ question, onSubmit, progress }: MeasurementScreenProps) {
   const [weight, setWeight] = useState(70);
   const [height, setHeight] = useState(180);
   const [weightUnit, setWeightUnit] = useState<"kg" | "lb">("kg");
@@ -47,6 +49,12 @@ export function MeasurementScreen({ question, onSubmit }: MeasurementScreenProps
 
   return (
     <div className="w-full animate-in fade-in slide-in-from-bottom-5 duration-500">
+      <div className="mb-4">
+        <p className="text-center text-sm text-muted-foreground mb-2">
+          Progresso
+        </p>
+        <Progress value={progress} aria-label={`${Math.round(progress)}% completo`} />
+      </div>
       <Card className="w-full max-w-md mx-auto bg-card border-border shadow-lg">
         <CardHeader className="text-center">
           {question.description && (

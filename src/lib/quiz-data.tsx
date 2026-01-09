@@ -8,7 +8,7 @@ export type Answer = {
 
 export type Question = {
   id: string;
-  type?: 'multiple-choice' | 'measurement';
+  type?: 'multiple-choice' | 'measurement' | 'multiple-checkbox';
   question: string;
   description?: string;
   answers: (string | Answer)[];
@@ -162,6 +162,20 @@ export const quizData: Question[] = [
     question: "Se souber, informe seu peso e altura.",
     description: "Para uma estimativa de gasto calórico ainda mais precisa...",
     answers: [],
+  },
+  {
+    id: 'q14',
+    type: 'multiple-checkbox',
+    question: 'Quais áreas do corpo você quer destacar?',
+    description: 'Selecione todas as regiões que você quer dar ênfase nos próximos 28 dias.',
+    answers: [
+      'Abdômen & Core',
+      'Peitoral',
+      'Braços',
+      'Pernas',
+      'Costas & Postura',
+      'Corpo Todo',
+    ],
   },
   {
     id: "q10",

@@ -9,6 +9,7 @@ import { WelcomeScreen } from "@/components/quiz/welcome-screen";
 import { QuizScreen } from "@/components/quiz/quiz-screen";
 import { ResultScreen } from "@/components/quiz/result-screen";
 import { MeasurementScreen } from "@/components/quiz/measurement-screen";
+import { CheckboxQuestionScreen } from "@/components/quiz/checkbox-question-screen";
 import { quizData } from "@/lib/quiz-data.tsx";
 
 type QuizState = "welcome" | "in-progress" | "loading" | "results";
@@ -28,25 +29,29 @@ export default function Home() {
   const handleAnswer = (question: string, answer: string) => {
     const newAnswers = { ...answers, [question]: answer };
     setAnswers(newAnswers);
-
-    if (currentQuestionIndex < quizData.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      finishQuiz(newAnswers);
-    }
+    advanceToNextQuestion(newAnswers);
   };
 
   const handleMeasurementSubmit = (measurements: Record<string, string>) => {
     const newAnswers = { ...answers, ...measurements };
     setAnswers(newAnswers);
-    
+    advanceToNextQuestion(newAnswers);
+  };
+  
+  const handleCheckboxSubmit = (question: string, selectedAnswers: string[]) => {
+    const newAnswers = { ...answers, [question]: selectedAnswers.join(", ") };
+    setAnswers(newAnswers);
+    advanceToNextQuestion(newAnswers);
+  };
+  
+  const advanceToNextQuestion = (currentAnswers: Answers) => {
     if (currentQuestionIndex < quizData.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      finishQuiz(newAnswers);
+      finishQuiz(currentAnswers);
     }
-  };
-  
+  }
+
   const finishQuiz = async (finalAnswers: Answers) => {
     setQuizState("loading");
     try {
@@ -72,27 +77,46 @@ export default function Home() {
   };
 
   const renderContent = () => {
+    const currentQuestion = quizData[currentQuestionIndex];
+
     switch (quizState) {
       case "welcome":
         return <WelcomeScreen onStart={handleStart} />;
       case "in-progress":
-        const currentQuestion = quizData[currentQuestionIndex];
+        if (!currentQuestion) return null;
+
+        const progress = ((currentQuestionIndex + 1) / quizData.length) * 100;
+        const questionNumber = currentQuestionIndex + 1;
+        const totalQuestions = quizData.length;
+
         if (currentQuestion.type === 'measurement') {
           return (
             <MeasurementScreen
               question={currentQuestion}
               onSubmit={handleMeasurementSubmit}
+              progress={progress}
             />
           );
         }
+
+        if (currentQuestion.type === 'multiple-checkbox') {
+          return (
+            <CheckboxQuestionScreen
+              question={currentQuestion}
+              onSubmit={handleCheckboxSubmit}
+              progress={progress}
+            />
+          );
+        }
+        
         return (
           <QuizScreen
             key={currentQuestionIndex}
             question={currentQuestion}
             onAnswer={handleAnswer}
-            progress={((currentQuestionIndex + 1) / quizData.length) * 100}
-            questionNumber={currentQuestionIndex + 1}
-            totalQuestions={quizData.length}
+            progress={progress}
+            questionNumber={questionNumber}
+            totalQuestions={totalQuestions}
           />
         );
       case "loading":
