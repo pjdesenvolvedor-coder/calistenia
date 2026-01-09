@@ -28,12 +28,12 @@ export function QuizScreen({
         </p>
         <Progress value={progress} aria-label={`${Math.round(progress)}% completo`} />
       </div>
-      <Card className="w-full max-w-md mx-auto">
+      <Card className="w-full max-w-md mx-auto bg-transparent border-border">
         <CardHeader>
-          <CardDescription className="text-primary font-semibold">
+          <CardDescription className="text-accent font-semibold">
             Pergunta {questionNumber} de {totalQuestions}
           </CardDescription>
-          <CardTitle className="font-headline text-2xl">
+          <CardTitle className="font-headline text-3xl font-black uppercase">
             {question.question}
           </CardTitle>
         </CardHeader>
@@ -43,7 +43,7 @@ export function QuizScreen({
               key={index}
               variant="outline"
               size="lg"
-              className="justify-start text-left h-auto py-3"
+              className="justify-start text-left h-auto py-3 bg-secondary/80 border-secondary hover:bg-secondary hover:border-primary"
               onClick={() => onAnswer(question.question, answer)}
             >
               <span className="mr-3 font-bold text-primary">{String.fromCharCode(65 + index)}</span>
