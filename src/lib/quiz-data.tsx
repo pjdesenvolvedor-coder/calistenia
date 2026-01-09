@@ -157,6 +157,13 @@ export const quizData: Question[] = [
     ],
   },
   {
+    id: "q11",
+    type: 'measurement',
+    question: "Se souber, informe seu peso e altura.",
+    description: "Para uma estimativa de gasto calórico ainda mais precisa...",
+    answers: [],
+  },
+  {
     id: "q10",
     question: "Você tem alguma lesão ou limitação física?",
     answers: [
@@ -164,16 +171,6 @@ export const quizData: Question[] = [
       "Dor nas costas",
       "Dor nos ombros",
       "Dor nos joelhos",
-    ],
-  },
-  {
-    id: 'q12',
-    question: 'Como você se imagina após os 28 Dias do Desafio?',
-    answers: [
-      { text: 'Me olhar no espelho e ficar feliz com o que vejo!', emoji: '😊' },
-      { text: 'Ter energia para meus dias renderem mais!', emoji: '⚡️' },
-      { text: 'Dormir melhor sem sofrer com insônias e acordar cansado!', emoji: '😴' },
-      { text: 'Aumentar minha força para tarefas físicas!', emoji: '💪' },
     ],
   },
   {
@@ -186,10 +183,13 @@ export const quizData: Question[] = [
     ],
   },
   {
-    id: "q11",
-    type: 'measurement',
-    question: "Se souber, informe seu peso e altura.",
-    description: "Para uma estimativa de gasto calórico ainda mais precisa...",
-    answers: [],
+    id: 'q12',
+    question: 'Como você se imagina após os 28 Dias do Desafio?',
+    answers: [
+      { text: 'Me olhar no espelho e ficar feliz com o que vejo!', emoji: '😊' },
+      { text: 'Ter energia para meus dias renderem mais!', emoji: '⚡️' },
+      { text: 'Dormir melhor sem sofrer com insônias e acordar cansado!', emoji: '😴' },
+      { text: 'Aumentar minha força para tarefas físicas!', emoji: '💪' },
+    ],
   }
 ];
