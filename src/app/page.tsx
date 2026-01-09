@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ProductRecommendationOutput, recommendProduct } from "@/ai/flows/product-recommendation";
 
@@ -22,10 +22,19 @@ export default function Home() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [recommendation, setRecommendation] = useState<ProductRecommendationOutput | null>(null);
   const { toast } = useToast();
+  const [isRecommendationFlowStarted, setIsRecommendationFlowStarted] = useState(false);
 
   const handleStart = () => {
     setQuizState("in-progress");
   };
+
+  const advanceToNextQuestion = useCallback((currentAnswers: Answers) => {
+    if (currentQuestionIndex < quizData.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else {
+      setQuizState("loading");
+    }
+  }, [currentQuestionIndex]);
 
   const handleAnswer = (question: string, answer: string) => {
     const newAnswers = { ...answers, [question]: answer };
@@ -45,15 +54,10 @@ export default function Home() {
     advanceToNextQuestion(newAnswers);
   };
   
-  const advanceToNextQuestion = (currentAnswers: Answers) => {
-    if (currentQuestionIndex < quizData.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      setQuizState("loading");
-    }
-  }
-  
-  const handleLoadingComplete = async () => {
+  const handleLoadingComplete = useCallback(async () => {
+    if (isRecommendationFlowStarted) return;
+    setIsRecommendationFlowStarted(true);
+
     try {
       const result = await recommendProduct({ quizAnswers: answers });
       setRecommendation(result);
@@ -64,32 +68,39 @@ export default function Home() {
         description: "Não foi possível obter a sua recomendação. Por favor, tente novamente.",
         variant: "destructive",
       });
-      handleReset();
+      // Optionally reset to the beginning
+      // handleReset(); 
     }
-  };
+  }, [answers, isRecommendationFlowStarted, toast]);
 
   useEffect(() => {
-    if (quizState === 'loading' || !recommendation) return;
+    if (quizState === 'loading' && !isRecommendationFlowStarted) {
+      handleLoadingComplete();
+    }
+  }, [quizState, isRecommendationFlowStarted, handleLoadingComplete]);
 
-    const showResults = async () => {
-      // Show toast
-      toast({
-        title: "Tudo pronto!",
-        description: "Encontramos o treino ideal para você.",
-      });
+  useEffect(() => {
+    if (recommendation) {
+      const showResults = async () => {
+        // Show toast
+        toast({
+          title: "Tudo pronto!",
+          description: "Encontramos o treino ideal para você.",
+        });
 
-      // Change state to "redirecting"
-      setQuizState("redirecting");
+        // Change state to "redirecting"
+        setQuizState("redirecting");
 
-      // Wait 3 seconds on the redirecting screen
-      await new Promise(resolve => setTimeout(resolve, 3000));
+        // Wait 3 seconds on the redirecting screen
+        await new Promise(resolve => setTimeout(resolve, 3000));
 
-      // Finally, go to results
-      setQuizState("results");
-    };
-    
-    showResults();
-  }, [recommendation]); // Run only when recommendation is ready
+        // Finally, go to results
+        setQuizState("results");
+      };
+      
+      showResults();
+    }
+  }, [recommendation, toast]);
 
 
   const handleReset = () => {
@@ -97,6 +108,7 @@ export default function Home() {
     setCurrentQuestionIndex(0);
     setRecommendation(null);
     setQuizState("welcome");
+    setIsRecommendationFlowStarted(false);
   };
 
   const renderContent = () => {

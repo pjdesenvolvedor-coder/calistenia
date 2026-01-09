@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -15,61 +15,43 @@ import { CheckCircle, Target, Settings, Award, BarChart } from "lucide-react";
 import placeholderData from "@/lib/placeholder-images.json";
 
 const loadingSteps = [
-  { text: "Analisando seus objetivos...", icon: Target, duration: 2500 },
-  { text: "Selecionando os melhores exercícios...", icon: Award, duration: 3500 },
-  { text: "Ajustando plano pra sua rotina...", icon: Settings, duration: 2500 },
-  { text: "Finalizando seu plano personalizado...", icon: BarChart, duration: 3500 },
+  { text: "Analisando seus objetivos...", icon: Target, duration: 2.5 },
+  { text: "Selecionando os melhores exercícios...", icon: Award, duration: 3.5 },
+  { text: "Ajustando plano pra sua rotina...", icon: Settings, duration: 2.5 },
+  { text: "Finalizando seu plano personalizado...", icon: BarChart, duration: 3.5 },
 ];
+
+const totalDuration = loadingSteps.reduce((acc, step) => acc + step.duration, 0);
 
 const carouselImages = placeholderData.placeholderImages.filter(img => img.id.startsWith('carousel-'));
 
 
 export function LoadingScreen({ mainGoal, onLoadingComplete }: { mainGoal: string, onLoadingComplete: () => void }) {
-  const [progress, setProgress] = useState<{ [key: number]: number }>({});
-  const [done, setDone] = useState<number[]>([]);
+  const [elapsedTime, setElapsedTime] = useState(0);
   const onLoadingCompleteRef = useRef(onLoadingComplete);
   onLoadingCompleteRef.current = onLoadingComplete;
 
   useEffect(() => {
-    let cumulativeDelay = 0;
-    const totalDuration = loadingSteps.reduce((acc, step) => acc + step.duration, 0);
-
-    const timeouts: NodeJS.Timeout[] = [];
-    const intervals: NodeJS.Timeout[] = [];
-
-    loadingSteps.forEach((step, index) => {
-      const stepTimeout = setTimeout(() => {
-        let currentProgress = 0;
-        const interval = setInterval(() => {
-          currentProgress += 5;
-          setProgress((prev) => ({ ...prev, [index]: currentProgress }));
-
-          if (currentProgress >= 100) {
-            clearInterval(interval);
-            setDone((prev) => [...prev, index]);
-          }
-        }, step.duration / 20);
-        intervals.push(interval);
-      }, cumulativeDelay);
-      timeouts.push(stepTimeout);
-
-      cumulativeDelay += step.duration;
-    });
-
-    const finalTimeout = setTimeout(() => {
+    const startTime = Date.now();
+    const interval = setInterval(() => {
+      const newElapsedTime = (Date.now() - startTime) / 1000;
+      if (newElapsedTime >= totalDuration) {
+        clearInterval(interval);
+        setElapsedTime(totalDuration);
         onLoadingCompleteRef.current();
-    }, totalDuration + 100); // Add a small buffer
-    timeouts.push(finalTimeout);
+      } else {
+        setElapsedTime(newElapsedTime);
+      }
+    }, 50); // Update every 50ms for smoother progress
 
-    return () => {
-        timeouts.forEach(clearTimeout);
-        intervals.forEach(clearInterval);
-    };
+    return () => clearInterval(interval);
   }, []);
+  
+  let cumulativeDuration = 0;
 
   return (
     <Card className="w-full max-w-md mx-auto p-4 sm:p-6 text-center animate-in fade-in zoom-in-95 duration-500 overflow-hidden">
-      <CardContent className="p-0 flex flex-col justify-between h-full min-h-[calc(100vh-2rem)] sm:min-h-0 sm:max-h-[calc(100vh-4rem)]">
+      <CardContent className="p-0 flex flex-col justify-between h-full min-h-[calc(100vh-2rem)] sm:min-h-[calc(100vh-4rem)] md:min-h-0">
         <div className="flex-shrink-0">
           <div className="bg-primary/10 text-primary border border-primary/20 rounded-lg py-2 px-3 mb-4">
             <p className="font-semibold text-sm sm:text-base">
@@ -80,28 +62,42 @@ export function LoadingScreen({ mainGoal, onLoadingComplete }: { mainGoal: strin
 
           <div className="space-y-3 mb-4">
             {loadingSteps.map((step, index) => {
+              const stepStartTime = cumulativeDuration;
+              const stepEndTime = cumulativeDuration + step.duration;
+              cumulativeDuration = stepEndTime;
+
+              let progress;
+              if (elapsedTime >= stepEndTime) {
+                progress = 100;
+              } else if (elapsedTime < stepStartTime) {
+                progress = 0;
+              } else {
+                progress = ((elapsedTime - stepStartTime) / step.duration) * 100;
+              }
+              const isDone = progress >= 100;
               const Icon = step.icon;
+
               return (
                 <div key={index} className="space-y-1 text-left">
                   <div className="flex items-center text-xs sm:text-sm font-medium text-foreground/80">
-                    {done.includes(index) ? (
+                    {isDone ? (
                       <CheckCircle className="h-4 w-4 mr-2 text-green-500 shrink-0" />
                     ) : (
-                      <Icon className="h-4 w-4 mr-2 shrink-0" />
+                      <Icon className="h-4 w-4 mr-2 shrink-0 animate-pulse" />
                     )}
                     <span className="truncate">{step.text}</span>
                     <span className="ml-auto text-xs font-semibold">
-                      {Math.round(progress[index] || 0)}%
+                      {Math.round(progress)}%
                     </span>
                   </div>
-                  <Progress value={progress[index] || 0} className="h-2" />
+                  <Progress value={progress} className="h-2" />
                 </div>
               );
             })}
           </div>
         </div>
 
-        <div className="flex-grow flex items-center justify-center">
+        <div className="flex-grow flex items-center justify-center my-4">
             <Carousel className="w-full max-w-[200px] sm:max-w-xs mx-auto">
               <CarouselContent>
                 {carouselImages.map((image) => (
@@ -115,6 +111,7 @@ export function LoadingScreen({ mainGoal, onLoadingComplete }: { mainGoal: strin
                             className="object-cover"
                             data-ai-hint={image.imageHint}
                             sizes="(max-width: 640px) 150px, 200px"
+                            priority
                           />
                         </div>
                     </div>
