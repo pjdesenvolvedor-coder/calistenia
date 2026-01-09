@@ -15,10 +15,10 @@ import { CheckCircle, Target, Settings, Award, BarChart } from "lucide-react";
 import placeholderData from "@/lib/placeholder-images.json";
 
 const loadingSteps = [
-  { text: "Analisando seus objetivos...", icon: Target, duration: 1500 },
-  { text: "Selecionando os melhores exercícios...", icon: Award, duration: 2000 },
-  { text: "Ajustando plano pra sua rotina...", icon: Settings, duration: 1500 },
-  { text: "Finalizando seu plano personalizado...", icon: BarChart, duration: 2000 },
+  { text: "Analisando seus objetivos...", icon: Target, duration: 1800 },
+  { text: "Selecionando os melhores exercícios...", icon: Award, duration: 2500 },
+  { text: "Ajustando plano pra sua rotina...", icon: Settings, duration: 1800 },
+  { text: "Finalizando seu plano personalizado...", icon: BarChart, duration: 2500 },
 ];
 
 const carouselImages = placeholderData.placeholderImages.filter(img => img.id.startsWith('carousel-'));
@@ -51,37 +51,39 @@ export function LoadingScreen({ mainGoal }: { mainGoal: string }) {
 
   return (
     <Card className="w-full max-w-md mx-auto p-4 sm:p-6 text-center animate-in fade-in zoom-in-95 duration-500">
-      <CardContent className="p-0">
-        <div className="bg-primary/10 text-primary border border-primary/20 rounded-lg py-2 px-3 mb-4">
-          <p className="font-semibold text-sm sm:text-base">
-            Estamos montando seu Protocolo de Calistenia focado em{" "}
-            <span className="font-bold">{mainGoal}</span>...
-          </p>
-        </div>
+      <CardContent className="p-0 flex flex-col justify-between h-full min-h-[500px] sm:min-h-0">
+        <div>
+          <div className="bg-primary/10 text-primary border border-primary/20 rounded-lg py-2 px-3 mb-4">
+            <p className="font-semibold text-sm sm:text-base">
+              Estamos montando seu Protocolo de Calistenia focado em{" "}
+              <span className="font-bold">{mainGoal}</span>...
+            </p>
+          </div>
 
-        <div className="space-y-3 mb-4">
-          {loadingSteps.map((step, index) => {
-            const Icon = step.icon;
-            return (
-              <div key={index} className="space-y-1 text-left">
-                <div className="flex items-center text-xs sm:text-sm font-medium text-foreground/80">
-                  {done.includes(index) ? (
-                    <CheckCircle className="h-4 w-4 mr-2 text-green-500 shrink-0" />
-                  ) : (
-                    <Icon className="h-4 w-4 mr-2 shrink-0" />
-                  )}
-                  <span className="truncate">{step.text}</span>
-                  <span className="ml-auto text-xs font-semibold">
-                    {Math.round(progress[index] || 0)}%
-                  </span>
+          <div className="space-y-3 mb-4">
+            {loadingSteps.map((step, index) => {
+              const Icon = step.icon;
+              return (
+                <div key={index} className="space-y-1 text-left">
+                  <div className="flex items-center text-xs sm:text-sm font-medium text-foreground/80">
+                    {done.includes(index) ? (
+                      <CheckCircle className="h-4 w-4 mr-2 text-green-500 shrink-0" />
+                    ) : (
+                      <Icon className="h-4 w-4 mr-2 shrink-0" />
+                    )}
+                    <span className="truncate">{step.text}</span>
+                    <span className="ml-auto text-xs font-semibold">
+                      {Math.round(progress[index] || 0)}%
+                    </span>
+                  </div>
+                  <Progress value={progress[index] || 0} className="h-2" />
                 </div>
-                <Progress value={progress[index] || 0} className="h-2" />
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
-        <Carousel className="w-full max-w-[200px] sm:max-w-xs mx-auto">
+        <Carousel className="w-full max-w-[200px] sm:max-w-xs mx-auto mt-auto">
           <CarouselContent>
             {carouselImages.map((image) => (
               <CarouselItem key={image.id}>

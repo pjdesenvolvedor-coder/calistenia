@@ -11,8 +11,9 @@ import { MeasurementScreen } from "@/components/quiz/measurement-screen";
 import { CheckboxQuestionScreen } from "@/components/quiz/checkbox-question-screen";
 import { quizData } from "@/lib/quiz-data.tsx";
 import { LoadingScreen } from "@/components/quiz/loading-screen";
+import { RedirectingScreen } from "@/components/quiz/redirecting-screen";
 
-type QuizState = "welcome" | "in-progress" | "loading" | "results";
+type QuizState = "welcome" | "in-progress" | "loading" | "redirecting" | "results";
 type Answers = Record<string, string>;
 
 export default function Home() {
@@ -55,11 +56,27 @@ export default function Home() {
   const finishQuiz = async (finalAnswers: Answers) => {
     setQuizState("loading");
     try {
-      // Simulate a delay to show the loading screen
-      await new Promise(resolve => setTimeout(resolve, 5000));
+      // Simulate loading bars filling up (e.g., 7 seconds)
+      await new Promise(resolve => setTimeout(resolve, 7000));
+      
       const result = await recommendProduct({ quizAnswers: finalAnswers });
       setRecommendation(result);
+
+      // Show toast
+      toast({
+        title: "Tudo pronto!",
+        description: "Encontramos o treino ideal para você.",
+      });
+
+      // Change state to "redirecting"
+      setQuizState("redirecting");
+
+      // Wait 3 seconds on the redirecting screen
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+      // Finally, go to results
       setQuizState("results");
+
     } catch (error) {
       console.error("Failed to get recommendation", error);
       toast({
@@ -124,6 +141,8 @@ export default function Home() {
       case "loading":
         const mainGoal = answers['Qual o seu principal objetivo ao iniciar este desafio?'] || "Secar gordura do corpo";
         return <LoadingScreen mainGoal={mainGoal} />;
+      case "redirecting":
+        return <RedirectingScreen />;
       case "results":
         return recommendation ? (
           <ResultScreen recommendation={recommendation} onRetake={handleReset} />
