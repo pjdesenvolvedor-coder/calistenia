@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -27,27 +27,33 @@ const carouselImages = placeholderData.placeholderImages.filter(img => img.id.st
 
 
 export function LoadingScreen({ mainGoal, onLoadingComplete }: { mainGoal: string, onLoadingComplete: () => void }) {
-  const [elapsedTime, setElapsedTime] = useState(0);
+  const [progress, setProgress] = useState(0);
   const onLoadingCompleteRef = useRef(onLoadingComplete);
   onLoadingCompleteRef.current = onLoadingComplete;
 
   useEffect(() => {
+    let frameId: number;
     const startTime = Date.now();
-    const interval = setInterval(() => {
-      const newElapsedTime = (Date.now() - startTime) / 1000;
-      if (newElapsedTime >= totalDuration) {
-        clearInterval(interval);
-        setElapsedTime(totalDuration);
-        onLoadingCompleteRef.current();
-      } else {
-        setElapsedTime(newElapsedTime);
-      }
-    }, 50); // Update every 50ms for smoother progress
+    
+    const animate = () => {
+      const elapsedTime = (Date.now() - startTime) / 1000;
+      const newProgress = Math.min((elapsedTime / totalDuration) * 100, 100);
+      setProgress(newProgress);
 
-    return () => clearInterval(interval);
+      if (elapsedTime < totalDuration) {
+        frameId = requestAnimationFrame(animate);
+      } else {
+        onLoadingCompleteRef.current();
+      }
+    };
+
+    frameId = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(frameId);
   }, []);
-  
+
   let cumulativeDuration = 0;
+  const elapsedTotalTime = (progress / 100) * totalDuration;
 
   return (
     <Card className="w-full max-w-md mx-auto p-4 sm:p-6 text-center animate-in fade-in zoom-in-95 duration-500 overflow-hidden">
@@ -66,15 +72,15 @@ export function LoadingScreen({ mainGoal, onLoadingComplete }: { mainGoal: strin
               const stepEndTime = cumulativeDuration + step.duration;
               cumulativeDuration = stepEndTime;
 
-              let progress;
-              if (elapsedTime >= stepEndTime) {
-                progress = 100;
-              } else if (elapsedTime < stepStartTime) {
-                progress = 0;
+              let stepProgress;
+              if (elapsedTotalTime >= stepEndTime) {
+                stepProgress = 100;
+              } else if (elapsedTotalTime < stepStartTime) {
+                stepProgress = 0;
               } else {
-                progress = ((elapsedTime - stepStartTime) / step.duration) * 100;
+                stepProgress = ((elapsedTotalTime - stepStartTime) / step.duration) * 100;
               }
-              const isDone = progress >= 100;
+              const isDone = stepProgress >= 100;
               const Icon = step.icon;
 
               return (
@@ -87,10 +93,10 @@ export function LoadingScreen({ mainGoal, onLoadingComplete }: { mainGoal: strin
                     )}
                     <span className="truncate">{step.text}</span>
                     <span className="ml-auto text-xs font-semibold">
-                      {Math.round(progress)}%
+                      {Math.round(stepProgress)}%
                     </span>
                   </div>
-                  <Progress value={progress} className="h-2" />
+                  <Progress value={stepProgress} className="h-2" />
                 </div>
               );
             })}
