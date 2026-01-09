@@ -61,7 +61,7 @@ export function QuizScreen({
                 return (
                   <button
                     key={index}
-                    className="flex flex-col items-center justify-center gap-4 rounded-lg border bg-secondary/30 p-6 text-center transition-colors hover:bg-secondary hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="flex flex-col items-center justify-center gap-4 rounded-lg border bg-secondary/30 p-6 text-center transition-colors hover:bg-secondary hover:border-primary hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary group"
                     onClick={() => onAnswer(question.question, answer.text)}
                   >
                     {Icon && <Icon className="h-20 w-20 text-primary" />}
@@ -104,11 +104,11 @@ export function QuizScreen({
               key={index}
               variant="outline"
               size="lg"
-              className="justify-start text-left h-auto py-3 bg-secondary/80 border-secondary hover:bg-secondary hover:border-primary"
+              className="justify-start text-left h-auto py-3 bg-secondary/80 border-secondary hover:bg-secondary hover:border-primary hover:text-primary group"
               onClick={() => onAnswer(question.question, answer as string)}
             >
               <span className="mr-3 font-bold text-primary">{String.fromCharCode(65 + index)}</span>
-              <span className="flex-1 whitespace-normal">{isAnswerObject(answer) ? answer.text : answer}</span>
+              <span className="flex-1 whitespace-normal group-hover:text-primary">{isAnswerObject(answer) ? answer.text : answer}</span>
             </Button>
           ))}
         </CardContent>
