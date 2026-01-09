@@ -1,7 +1,7 @@
 "use client";
 
 import { CheckCircle } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 type SalesNotificationProps = {
   name: string;
@@ -11,16 +11,24 @@ type SalesNotificationProps = {
 };
 
 export function SalesNotification({ name, time, product, onHide }: SalesNotificationProps) {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onHide();
-    }, 5000); // A notificação desaparecerá após 5 segundos
+  const [isHiding, setIsHiding] = useState(false);
 
-    return () => clearTimeout(timer);
+  useEffect(() => {
+    const hideTimer = setTimeout(() => {
+      setIsHiding(true);
+      const unmountTimer = setTimeout(onHide, 500); // Corresponde à duração da animação de saída
+      return () => clearTimeout(unmountTimer);
+    }, 4500); // Começa a desaparecer um pouco antes de 5s
+
+    return () => clearTimeout(hideTimer);
   }, [onHide]);
 
+  const animationClasses = isHiding 
+    ? 'animate-out fade-out slide-out-to-bottom-5 duration-500'
+    : 'animate-in fade-in slide-in-from-bottom-5 duration-500';
+
   return (
-    <div className="fixed bottom-5 right-5 z-50 w-full max-w-sm animate-in fade-in slide-in-from-bottom-5 duration-500">
+    <div className={`fixed bottom-5 right-5 z-50 w-full max-w-sm ${animationClasses}`}>
       <div className="bg-white rounded-xl shadow-lg p-4 flex items-center gap-4 border border-gray-200">
         <div className="p-2 bg-green-100 rounded-full border-4 border-green-50">
           <CheckCircle className="h-6 w-6 text-green-600" />

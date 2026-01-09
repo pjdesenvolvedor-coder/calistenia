@@ -236,7 +236,7 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
                 <p className="text-5xl font-extrabold text-brand-green">12x <span className="text-6xl">R$5,80</span></p>
                 <p className="text-gray-600 text-sm">ou R$58,00 à vista</p>
               </div>
-              <Button size="lg" className="w-full h-14 bg-brand-green hover:bg-brand-green-dark text-white text-xl font-bold animate-pulse-scale">
+              <Button size="lg" className="w-full h-14 bg-brand-green hover:bg-brand-green-dark text-white text-xl font-bold animate-pulse-scale" onClick={handleScrollToOffer}>
                 <Zap className="w-6 h-6 mr-2"/>
                 QUERO ACESSO IMEDIATO
               </Button>
