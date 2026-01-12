@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import Script from 'next/script';
+import { FirebaseClientProvider } from '@/firebase/client-provider';
 
 export const metadata: Metadata = {
   title: 'Quiz de Calistenia',
@@ -42,7 +43,9 @@ export default function RootLayout({
           src="https://www.facebook.com/tr?id=1426305492459129&ev=PageView&noscript=1"
           />
         </noscript>
-        {children}
+        <FirebaseClientProvider>
+          {children}
+        </FirebaseClientProvider>
         <Toaster />
       </body>
     </html>

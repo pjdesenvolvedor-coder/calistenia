@@ -11,6 +11,8 @@ import { MeasurementScreen } from "@/components/quiz/measurement-screen";
 import { CheckboxQuestionScreen } from "@/components/quiz/checkbox-question-screen";
 import { quizData } from "@/lib/quiz-data";
 import { LoadingScreen } from "@/components/quiz/loading-screen";
+import { addDocumentNonBlocking } from "@/firebase";
+import { collection, getFirestore } from "firebase/firestore";
 
 type QuizState = "welcome" | "in-progress" | "loading" | "results";
 type Answers = Record<string, string>;
@@ -21,8 +23,17 @@ export default function Home() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [recommendation, setRecommendation] = useState<ProductRecommendationOutput | null>(null);
   const { toast } = useToast();
+  const firestore = getFirestore();
 
   const handleStart = () => {
+    // Track quiz click
+    const quizId = "calisthenics-quiz"; // Example ID, can be made dynamic
+    const clicksCollection = collection(firestore, 'quiz_clicks');
+    addDocumentNonBlocking(clicksCollection, { 
+      quizId: quizId, 
+      timestamp: new Date().toISOString() 
+    });
+
     setQuizState("in-progress");
   };
 

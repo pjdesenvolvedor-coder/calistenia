@@ -196,7 +196,7 @@ service cloud.firestore {
      *              event, but only administrators can read, list, or manage this data.
      * @path        /quiz_clicks/{quizClickId}
      * @allow       (create) Any user, signed-in or anonymous, can generate a click event.
-     * @allow       (list) An admin can list all click events for analysis.
+     * @allow       (list, get) An admin can list all click events for analysis.
      * @deny        (get) A non-admin user cannot read a specific click event document.
      * @deny        (list) A non-admin user cannot list the collection.
      * @principle   Segregates public write actions from private read/analysis actions.

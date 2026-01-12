@@ -191,10 +191,6 @@
       "type": "object",
       "description": "Represents a click on a specific quiz, capturing the number of clicks for each quiz.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the quiz click event."
-        },
         "quizId": {
           "type": "string",
           "description": "Reference to the Quiz that was clicked. (Relationship: Quiz 1:N QuizClick)"
@@ -206,7 +202,6 @@
         }
       },
       "required": [
-        "id",
         "quizId",
         "timestamp"
       ]
