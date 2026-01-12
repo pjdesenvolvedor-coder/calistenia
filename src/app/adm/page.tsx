@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useCollection, useUser, useAuth, useMemoFirebase } from '@/firebase';
 import { collection, getFirestore, query } from 'firebase/firestore';
 import { signInAnonymously } from 'firebase/auth';
@@ -27,10 +27,16 @@ interface QuizAnswer {
 }
 
 interface QuizAttempt {
-    id: string;
-    quizId: string;
-    userId: string;
-    attemptedAt: string;
+  id: string;
+  quizId: string;
+  userId: string;
+  attemptedAt: string;
+}
+
+interface SalesPageClick {
+  id: string;
+  buttonId: string;
+  timestamp: string;
 }
 
 export default function AdminPage() {
@@ -49,13 +55,27 @@ export default function AdminPage() {
     [firestore, user]
   );
   const { data: quizAttempts, isLoading: attemptsLoading } = useCollection<QuizAttempt>(quizAttemptsQuery);
-  
-  const completedAttemptUserIds = useMemoFirebase(() => new Set(quizAnswers?.map(a => a.userId) || []), [quizAnswers]);
 
-  const incompleteAttempts = useMemoFirebase(
+  const salesPageClicksQuery = useMemoFirebase(
+    () => (user ? query(collection(firestore, 'sales_page_clicks')) : null),
+    [firestore, user]
+  );
+  const { data: salesPageClicks, isLoading: salesClicksLoading } = useCollection<SalesPageClick>(salesPageClicksQuery);
+
+  const completedAttemptUserIds = useMemo(() => new Set(quizAnswers?.map(a => a.userId) || []), [quizAnswers]);
+
+  const incompleteAttempts = useMemo(
     () => quizAttempts?.filter(attempt => !completedAttemptUserIds.has(attempt.userId)) || [],
     [quizAttempts, completedAttemptUserIds]
   );
+  
+  const salesButtonClicks = useMemo(() => {
+    return salesPageClicks?.reduce((acc, click) => {
+      acc[click.buttonId] = (acc[click.buttonId] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>) || {};
+  }, [salesPageClicks]);
+
 
   const handleAnonymousSignIn = async () => {
     if (!auth) return;
@@ -66,7 +86,7 @@ export default function AdminPage() {
     }
   };
   
-  const isLoading = isUserLoading || answersLoading || attemptsLoading;
+  const isLoading = isUserLoading || answersLoading || attemptsLoading || salesClicksLoading;
 
   if (isLoading) {
     return (
@@ -108,9 +128,10 @@ export default function AdminPage() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="completed">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="completed">Respostas Completas ({quizAnswers?.length || 0})</TabsTrigger>
               <TabsTrigger value="incomplete">Tentativas Incompletas ({incompleteAttempts.length || 0})</TabsTrigger>
+              <TabsTrigger value="sales-clicks">Cliques na Venda ({salesPageClicks?.length || 0})</TabsTrigger>
             </TabsList>
             <TabsContent value="completed">
                 {quizAnswers && quizAnswers.length > 0 ? (
@@ -180,9 +201,35 @@ export default function AdminPage() {
                     </div>
                 )}
             </TabsContent>
+             <TabsContent value="sales-clicks">
+                {Object.keys(salesButtonClicks).length > 0 ? (
+                     <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Botão</TableHead>
+                                <TableHead className='text-right'>Cliques</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {Object.entries(salesButtonClicks).map(([buttonId, count]) => (
+                                <TableRow key={buttonId}>
+                                    <TableCell className="font-medium">{buttonId}</TableCell>
+                                    <TableCell className='text-right'>{count}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                     </Table>
+                ) : (
+                    <div className="text-center text-muted-foreground py-8">
+                        Nenhum clique na página de vendas registrado.
+                    </div>
+                )}
+            </TabsContent>
           </Tabs>
         </CardContent>
       </Card>
     </div>
   );
 }
+
+    

@@ -20,6 +20,8 @@ import { FaqItem } from './faq-item';
 import type { ProductRecommendationOutput } from '@/ai/flows/product-recommendation';
 import { SalesNotification } from './sales-notification';
 import { useEffect, useState } from 'react';
+import { addDocumentNonBlocking } from '@/firebase';
+import { collection, getFirestore } from 'firebase/firestore';
 
 type SalesPageProps = {
   recommendation: ProductRecommendationOutput;
@@ -51,6 +53,7 @@ const salesData = [
 export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
   const getImage = (id: string) => placeholderData.placeholderImages.find(img => img.id === id);
   const mainGoal = recommendation.reasoning.replace('Com base nas suas respostas, seu objetivo é ', '');
+  const firestore = getFirestore();
 
   const [currentSale, setCurrentSale] = useState<typeof salesData[0] | null>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -77,7 +80,16 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
     };
   }, []);
 
+  const trackClick = (buttonId: string) => {
+    const clicksCollection = collection(firestore, 'sales_page_clicks');
+    addDocumentNonBlocking(clicksCollection, {
+      buttonId,
+      timestamp: new Date().toISOString(),
+    });
+  }
+
   const handleScrollToOffer = () => {
+    trackClick('scroll-to-offer-cta');
     const offerSection = document.getElementById('oferta');
     if (offerSection) {
       offerSection.scrollIntoView({ behavior: 'smooth' });
@@ -85,6 +97,7 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
   };
 
   const handleCheckout = () => {
+    trackClick('main-checkout-cta');
     window.location.href = 'https://pay.lowify.com.br/checkout?product_id=ifaK3n';
   };
 
@@ -294,7 +307,10 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
         <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-2xl font-bold">Alcance a sua melhor versão em 28 dias!</h2>
             <p className="mt-2 text-gray-600">Acesso imediato ao plano de treino e todos os bônus por apenas <span className="font-bold">R$10,00</span></p>
-            <Button size="lg" className="mt-6 h-14 bg-brand-green hover:bg-brand-green-dark text-white text-xl font-bold animate-pulse-scale" onClick={handleScrollToOffer}>
+            <Button size="lg" className="mt-6 h-14 bg-brand-green hover:bg-brand-green-dark text-white text-xl font-bold animate-pulse-scale" onClick={() => {
+              trackClick('footer-checkout-cta');
+              handleScrollToOffer();
+            }}>
                 <Zap className="w-6 h-6 mr-2"/>
                 SIM, QUERO MEU ACESSO!
             </Button>
@@ -321,3 +337,5 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
     </div>
   );
 }
+
+    
