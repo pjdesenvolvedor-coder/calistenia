@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useCollection, useUser, useAuth, useMemoFirebase } from '@/firebase';
-import { collection, getFirestore, query } from 'firebase/firestore';
+import { collection, getFirestore, query, getDocs, writeBatch, deleteDoc, doc } from 'firebase/firestore';
 import { signInAnonymously } from 'firebase/auth';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import {
@@ -14,10 +14,23 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Trash2 } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useToast } from '@/hooks/use-toast';
+
 
 interface QuizAnswer {
   id: string;
@@ -49,24 +62,25 @@ export default function AdminPage() {
   const auth = useAuth();
   const { user, isUserLoading } = useUser();
   const firestore = getFirestore();
+  const { toast } = useToast();
 
   const quizAnswersQuery = useMemoFirebase(
     () => (user ? query(collection(firestore, 'quiz_answers')) : null),
     [firestore, user]
   );
-  const { data: quizAnswers, isLoading: answersLoading } = useCollection<QuizAnswer>(quizAnswersQuery);
+  const { data: quizAnswers, isLoading: answersLoading, error: answersError } = useCollection<QuizAnswer>(quizAnswersQuery);
 
   const quizAttemptsQuery = useMemoFirebase(
     () => (user ? query(collection(firestore, 'quiz_attempts')) : null),
     [firestore, user]
   );
-  const { data: quizAttempts, isLoading: attemptsLoading } = useCollection<QuizAttempt>(quizAttemptsQuery);
+  const { data: quizAttempts, isLoading: attemptsLoading, error: attemptsError } = useCollection<QuizAttempt>(quizAttemptsQuery);
 
   const salesPageClicksQuery = useMemoFirebase(
     () => (user ? query(collection(firestore, 'sales_page_clicks')) : null),
     [firestore, user]
   );
-  const { data: salesPageClicks, isLoading: salesClicksLoading } = useCollection<SalesPageClick>(salesPageClicksQuery);
+  const { data: salesPageClicks, isLoading: salesClicksLoading, error: salesClicksError } = useCollection<SalesPageClick>(salesPageClicksQuery);
 
   const completedAttemptUserIds = useMemo(() => new Set(quizAnswers?.map(a => a.userId) || []), [quizAnswers]);
 
@@ -91,8 +105,42 @@ export default function AdminPage() {
       console.error("Anonymous sign-in failed", error);
     }
   };
+
+  const handleDeleteAllData = async () => {
+    if (!firestore) return;
+    
+    const collectionsToDelete = ['quiz_answers', 'quiz_attempts', 'sales_page_clicks'];
+    
+    try {
+        for (const collectionName of collectionsToDelete) {
+            const collectionRef = collection(firestore, collectionName);
+            const snapshot = await getDocs(collectionRef);
+            if (snapshot.empty) continue;
+            
+            const batch = writeBatch(firestore);
+            snapshot.docs.forEach(doc => {
+                batch.delete(doc.ref);
+            });
+            await batch.commit();
+        }
+        
+        toast({
+            title: "Sucesso!",
+            description: "Todos os dados de teste foram apagados.",
+            variant: "default",
+        });
+
+    } catch (error) {
+        console.error("Erro ao apagar os dados:", error);
+        toast({
+            title: "Erro!",
+            description: "Ocorreu um erro ao apagar os dados. Tente novamente.",
+            variant: "destructive",
+        });
+    }
+  };
   
-  const isLoading = isUserLoading || answersLoading || attemptsLoading || salesClicksLoading;
+  const isLoading = isUserLoading || (user && (answersLoading || attemptsLoading || salesClicksLoading));
 
   if (isLoading) {
     return (
@@ -101,19 +149,21 @@ export default function AdminPage() {
       </div>
     );
   }
+  
+  const hasPermissionError = answersError || attemptsError || salesClicksError;
 
-  if (!user) {
+  if (!user || hasPermissionError) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
         <Card className="w-full max-w-sm text-center">
           <CardHeader>
-            <CardTitle className="text-xl">Acesso Restrito</CardTitle>
+            <CardTitle className="text-xl">{ hasPermissionError ? "Acesso Negado" : "Acesso Restrito"}</CardTitle>
             <CardDescription>
-              Você precisa se autenticar para ver esta página.
+              { hasPermissionError ? "Você não tem permissão para ver esta página." : "Você precisa se autenticar para ver esta página."}
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-4">
-            <Button onClick={handleAnonymousSignIn}>Entrar como Anônimo</Button>
+            {!user && <Button onClick={handleAnonymousSignIn}>Entrar como Anônimo</Button>}
             <div className="mt-4 text-xs text-muted-foreground bg-secondary p-3 rounded-lg">
                 <p>Seu ID de usuário é:</p>
                 <p className="font-mono break-all my-2">{user?.uid || 'Não autenticado'}</p>
@@ -129,8 +179,34 @@ export default function AdminPage() {
     <div className="container mx-auto p-4 md:p-8">
       <Card>
         <CardHeader>
-          <CardTitle>Administração do Quiz</CardTitle>
-          <CardDescription>Veja as respostas completas e as tentativas abandonadas.</CardDescription>
+          <div className='flex justify-between items-center'>
+            <div>
+                <CardTitle>Administração do Quiz</CardTitle>
+                <CardDescription>Veja as respostas completas e as tentativas abandonadas.</CardDescription>
+            </div>
+            <AlertDialog>
+                <AlertDialogTrigger asChild>
+                    <Button variant="destructive" size="icon">
+                        <Trash2 className='h-4 w-4'/>
+                        <span className='sr-only'>Apagar dados</span>
+                    </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Esta ação não pode ser desfeita. Todos os dados de respostas, tentativas e cliques na página de vendas serão apagados permanentemente.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDeleteAllData} className="bg-destructive hover:bg-destructive/90 text-destructive-foreground">
+                            Sim, apagar tudo
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="completed">
