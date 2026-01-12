@@ -238,7 +238,7 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
               </ul>
               <div className="my-6 text-center">
                 <p className="text-gray-500 line-through">DE R$97,00 POR:</p>
-                <p className="text-5xl font-extrabold text-brand-green">R$27,00</p>
+                <p className="text-5xl font-extrabold text-brand-green">R$10,00</p>
                 <p className="text-gray-600 text-sm">à vista no Pix</p>
               </div>
               <Button size="lg" className="w-full h-14 bg-brand-green hover:bg-brand-green-dark text-white text-xl font-bold animate-pulse-scale" onClick={handleCheckout}>
@@ -293,7 +293,7 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
       <section className="py-12 px-4 bg-gray-50">
         <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-2xl font-bold">Alcance a sua melhor versão em 28 dias!</h2>
-            <p className="mt-2 text-gray-600">Acesso imediato ao plano de treino e todos os bônus por apenas <span className="font-bold">R$27,00</span></p>
+            <p className="mt-2 text-gray-600">Acesso imediato ao plano de treino e todos os bônus por apenas <span className="font-bold">R$10,00</span></p>
             <Button size="lg" className="mt-6 h-14 bg-brand-green hover:bg-brand-green-dark text-white text-xl font-bold animate-pulse-scale" onClick={handleScrollToOffer}>
                 <Zap className="w-6 h-6 mr-2"/>
                 SIM, QUERO MEU ACESSO!
