@@ -1,0 +1,386 @@
+{
+  "entities": {
+    "Quiz": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Quiz",
+      "type": "object",
+      "description": "Represents a quiz with multiple questions.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the quiz."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the quiz."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of the quiz."
+        }
+      },
+      "required": [
+        "id",
+        "title"
+      ]
+    },
+    "Question": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Question",
+      "type": "object",
+      "description": "Represents a question within a quiz.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the question."
+        },
+        "quizId": {
+          "type": "string",
+          "description": "Reference to the Quiz this question belongs to. (Relationship: Quiz 1:N Question)"
+        },
+        "text": {
+          "type": "string",
+          "description": "The text of the question."
+        }
+      },
+      "required": [
+        "id",
+        "quizId",
+        "text"
+      ]
+    },
+    "Answer": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Answer",
+      "type": "object",
+      "description": "Represents a possible answer to a question.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the answer."
+        },
+        "questionId": {
+          "type": "string",
+          "description": "Reference to the Question this answer belongs to. (Relationship: Question 1:N Answer)"
+        },
+        "text": {
+          "type": "string",
+          "description": "The text of the answer."
+        },
+        "isCorrect": {
+          "type": "boolean",
+          "description": "Indicates whether this answer is the correct answer to the question."
+        }
+      },
+      "required": [
+        "id",
+        "questionId",
+        "text",
+        "isCorrect"
+      ]
+    },
+    "QuizAttempt": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "QuizAttempt",
+      "type": "object",
+      "description": "Represents a single attempt to answer a quiz by a user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the quiz attempt."
+        },
+        "quizId": {
+          "type": "string",
+          "description": "Reference to the Quiz being attempted. (Relationship: Quiz 1:N QuizAttempt)"
+        },
+        "attemptedAt": {
+          "type": "string",
+          "description": "The date and time when the quiz was attempted.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "quizId",
+        "attemptedAt"
+      ]
+    },
+    "AnsweredQuestion": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "AnsweredQuestion",
+      "type": "object",
+      "description": "Represents a user's answer to a specific question in a quiz attempt.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the answered question."
+        },
+        "quizAttemptId": {
+          "type": "string",
+          "description": "Reference to the QuizAttempt this answer belongs to. (Relationship: QuizAttempt 1:N AnsweredQuestion)"
+        },
+        "questionId": {
+          "type": "string",
+          "description": "Reference to the Question being answered. (Relationship: Question 1:N AnsweredQuestion)"
+        },
+        "answerId": {
+          "type": "string",
+          "description": "Reference to the Answer selected by the user. (Relationship: Answer 1:N AnsweredQuestion)"
+        }
+      },
+      "required": [
+        "id",
+        "quizAttemptId",
+        "questionId",
+        "answerId"
+      ]
+    },
+    "ProductRecommendation": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ProductRecommendation",
+      "type": "object",
+      "description": "Represents a product recommended based on quiz results.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the recommendation."
+        },
+        "quizAttemptId": {
+          "type": "string",
+          "description": "Reference to the QuizAttempt that led to this recommendation. (Relationship: QuizAttempt 1:1 ProductRecommendation)"
+        },
+        "productId": {
+          "type": "string",
+          "description": "Reference to the recommended Product. (Relationship: Product 1:1 ProductRecommendation)"
+        }
+      },
+      "required": [
+        "id",
+        "quizAttemptId",
+        "productId"
+      ]
+    },
+    "Product": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Product",
+      "type": "object",
+      "description": "Represents a product available for recommendation.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the product."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the product."
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the product."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description"
+      ]
+    },
+    "QuizClick": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "QuizClick",
+      "type": "object",
+      "description": "Represents a click on a specific quiz, capturing the number of clicks for each quiz.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the quiz click event."
+        },
+        "quizId": {
+          "type": "string",
+          "description": "Reference to the Quiz that was clicked. (Relationship: Quiz 1:N QuizClick)"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "The date and time when the quiz was clicked.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "quizId",
+        "timestamp"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/quizzes/{quizId}",
+        "definition": {
+          "entityName": "Quiz",
+          "schema": {
+            "$ref": "#/backend/entities/Quiz"
+          },
+          "description": "Stores quiz definitions. Public read access, creation restricted to authorized users.",
+          "params": [
+            {
+              "name": "quizId",
+              "description": "Unique identifier for the quiz."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/quizzes/{quizId}/questions/{questionId}",
+        "definition": {
+          "entityName": "Question",
+          "schema": {
+            "$ref": "#/backend/entities/Question"
+          },
+          "description": "Stores questions for each quiz. Creation and modification restricted to authorized users based on quizId.",
+          "params": [
+            {
+              "name": "quizId",
+              "description": "Unique identifier for the quiz."
+            },
+            {
+              "name": "questionId",
+              "description": "Unique identifier for the question."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/quizzes/{quizId}/questions/{questionId}/answers/{answerId}",
+        "definition": {
+          "entityName": "Answer",
+          "schema": {
+            "$ref": "#/backend/entities/Answer"
+          },
+          "description": "Stores answers for each question. Creation and modification restricted to authorized users based on quizId and questionId.",
+          "params": [
+            {
+              "name": "quizId",
+              "description": "Unique identifier for the quiz."
+            },
+            {
+              "name": "questionId",
+              "description": "Unique identifier for the question."
+            },
+            {
+              "name": "answerId",
+              "description": "Unique identifier for the answer."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/quiz_attempts/{quizAttemptId}",
+        "definition": {
+          "entityName": "QuizAttempt",
+          "schema": {
+            "$ref": "#/backend/entities/QuizAttempt"
+          },
+          "description": "Stores quiz attempts made by users.",
+          "params": [
+            {
+              "name": "quizAttemptId",
+              "description": "Unique identifier for the quiz attempt."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/quiz_attempts/{quizAttemptId}/answered_questions/{answeredQuestionId}",
+        "definition": {
+          "entityName": "AnsweredQuestion",
+          "schema": {
+            "$ref": "#/backend/entities/AnsweredQuestion"
+          },
+          "description": "Stores answered questions for each quiz attempt.",
+          "params": [
+            {
+              "name": "quizAttemptId",
+              "description": "Unique identifier for the quiz attempt."
+            },
+            {
+              "name": "answeredQuestionId",
+              "description": "Unique identifier for the answered question."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/product_recommendations/{productRecommendationId}",
+        "definition": {
+          "entityName": "ProductRecommendation",
+          "schema": {
+            "$ref": "#/backend/entities/ProductRecommendation"
+          },
+          "description": "Stores product recommendations based on quiz attempts.",
+          "params": [
+            {
+              "name": "productRecommendationId",
+              "description": "Unique identifier for the product recommendation."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/products/{productId}",
+        "definition": {
+          "entityName": "Product",
+          "schema": {
+            "$ref": "#/backend/entities/Product"
+          },
+          "description": "Stores product details.",
+          "params": [
+            {
+              "name": "productId",
+              "description": "Unique identifier for the product."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/quiz_clicks/{quizClickId}",
+        "definition": {
+          "entityName": "QuizClick",
+          "schema": {
+            "$ref": "#/backend/entities/QuizClick"
+          },
+          "description": "Stores click events for each quiz. Accessible only to admins.",
+          "params": [
+            {
+              "name": "quizClickId",
+              "description": "Unique identifier for the quiz click event."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/roles_admin/{userId}",
+        "definition": {
+          "entityName": "roles_admin",
+          "schema": {
+            "$ref": "#/backend/entities/Quiz"
+          },
+          "description": "Indicates admin role. Existence of document grants admin privileges.  No data is stored in the document itself (existence over content).",
+          "params": [
+            {
+              "name": "userId",
+              "description": "User ID of the admin."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to support a quiz application with a focus on tracking quiz clicks for administrative purposes. Key considerations include: \n\n1.  **Authorization Independence**: Since there's no explicit user-specific data besides quiz attempts, denormalization focuses on making quiz click data readily accessible for admin reporting without complex `get()` calls in security rules.\n2.  **Structural Segregation**:  The `/quizzes` and `/quiz_clicks` collections are separated to maintain a homogeneous security posture. Admin-only access to click data is enforced through a dedicated `/roles_admin/{uid}` collection.\n3.  **Access Modeling**: Public read access to quizzes, restricted creation to authorized users, and admin-only access to quiz click data.\n4. **QAPs**: The structure supports QAPs by segregating quiz content and quiz click data. The `/quiz_clicks` collection's security rules can efficiently filter data based on admin role existence.\n5. **Admin Reporting**: The structure supports the admin's need to view the number of clicks per quiz through the `/quiz_clicks` collection, which is designed for efficient aggregation and reporting."
+  }
+}
