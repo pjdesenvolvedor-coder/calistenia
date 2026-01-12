@@ -50,13 +50,21 @@ export default function AdminPage() {
   const { data: quizzes, isLoading: quizzesLoading, error: quizzesError } = useCollection<Quiz>(quizzesQuery);
   
   const [aggregatedData, setAggregatedData] = useState<AggregatedClicks>({});
+  const [isAdmin, setIsAdmin] = useState(true); // Assume admin until an error proves otherwise
 
   useEffect(() => {
-    if (quizzes && quizClicks) {
-      const clicksByQuiz = quizClicks.reduce((acc, click) => {
+    if (clicksError) {
+      setIsAdmin(false);
+    }
+  }, [clicksError]);
+
+  useEffect(() => {
+    // We can still aggregate data even if there are no clicks, but we have quizzes.
+    if (quizzes) {
+      const clicksByQuiz = quizClicks?.reduce((acc, click) => {
         acc[click.quizId] = (acc[click.quizId] || 0) + 1;
         return acc;
-      }, {} as { [key: string]: number });
+      }, {} as { [key: string]: number }) || {};
 
       const quizMap = quizzes.reduce((acc, quiz) => {
         acc[quiz.id] = quiz.title;
@@ -71,22 +79,21 @@ export default function AdminPage() {
 
       const finalData: AggregatedClicks = {};
       
-      // Process quizzes with clicks
-      for (const quizId in clicksByQuiz) {
+      // Create entries for all known quizzes
+      for (const quizId in quizMap) {
         finalData[quizId] = {
-          count: clicksByQuiz[quizId],
-          title: quizMap[quizId] || 'Quiz Desconhecido',
+          count: clicksByQuiz[quizId] || 0,
+          title: quizMap[quizId],
         };
       }
-
-      // Ensure default quiz is present even if it has no clicks yet
+      
+      // Ensure default quiz is present if not already added
       if (!finalData[defaultQuizId]) {
          finalData[defaultQuizId] = {
            count: clicksByQuiz[defaultQuizId] || 0,
            title: quizMap[defaultQuizId],
          };
       }
-
 
       setAggregatedData(finalData);
     }
@@ -101,7 +108,8 @@ export default function AdminPage() {
     }
   };
   
-  const isLoading = isUserLoading || clicksLoading || quizzesLoading;
+  // Clicks are not essential for the page to load, but user and quizzes are.
+  const isLoading = isUserLoading || quizzesLoading;
 
   if (isLoading) {
     return (
@@ -129,17 +137,17 @@ export default function AdminPage() {
     );
   }
   
-  if (clicksError || quizzesError) {
+  if (quizzesError) {
       return (
         <div className="flex min-h-screen items-center justify-center bg-background p-4 text-center">
           <Card className="max-w-lg p-6 border-destructive">
             <CardHeader>
-              <CardTitle className="text-destructive">Erro de Permissão</CardTitle>
+              <CardTitle className="text-destructive">Erro ao Carregar Dados</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-destructive-foreground">Você não tem permissão para acessar estes dados.</p>
+              <p className="text-destructive-foreground">Não foi possível carregar os dados das enquetes.</p>
               <p className="mt-2 text-sm text-muted-foreground">
-                Para obter acesso de administrador, adicione um documento na coleção <code className="bg-muted px-1.5 py-1 rounded-sm text-xs">roles_admin</code> com o ID do seu usuário (<code className="bg-muted px-1.5 py-1 rounded-sm text-xs">{user.uid}</code>) no <a href="https://console.firebase.google.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">Console do Firebase</a>.
+               Por favor, verifique sua conexão ou as permissões do Firestore.
               </p>
             </CardContent>
           </Card>
@@ -154,6 +162,17 @@ export default function AdminPage() {
           <CardTitle>Cliques por Enquete</CardTitle>
         </CardHeader>
         <CardContent>
+          {!isAdmin && (
+             <div className="mb-6 max-w-2xl mx-auto bg-destructive/10 p-4 rounded-lg border border-destructive/20 text-center">
+                <h3 className="font-bold text-destructive">Acesso de Administrador Necessário</h3>
+                <p className="mt-2 text-sm text-destructive/90">
+                  Sua conta (<code className="bg-muted px-1.5 py-0.5 rounded-sm text-xs font-mono">{user.uid}</code>) não tem permissão para visualizar as estatísticas de cliques.
+                </p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Para obter acesso, adicione um documento na coleção <code className="bg-muted px-1.5 py-0.5 rounded-sm text-xs font-mono">roles_admin</code> com o ID do seu usuário no <a href="https://console.firebase.google.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">Console do Firebase</a>.
+                </p>
+              </div>
+          )}
           <Table>
             <TableHeader>
               <TableRow>
@@ -166,13 +185,13 @@ export default function AdminPage() {
                 Object.entries(aggregatedData).map(([quizId, data]) => (
                   <TableRow key={quizId}>
                     <TableCell className="font-medium">{data.title}</TableCell>
-                    <TableCell className="text-right">{data.count}</TableCell>
+                    <TableCell className="text-right">{isAdmin ? data.count : 'N/A'}</TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
                   <TableCell colSpan={2} className="text-center text-muted-foreground">
-                    Nenhum clique registrado ainda.
+                    Nenhuma enquete encontrada.
                   </TableCell>
                 </TableRow>
               )}
