@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useCollection, useUser, useAuth } from '@/firebase';
+import { useEffect, useState, useMemo } from 'react';
+import { useCollection, useUser, useAuth, useMemoFirebase } from '@/firebase';
 import { collection, getFirestore } from 'firebase/firestore';
 import { signInAnonymously } from 'firebase/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -40,8 +40,8 @@ export default function AdminPage() {
   const { user, isUserLoading } = useUser();
   const firestore = getFirestore();
 
-  const quizClicksQuery = collection(firestore, 'quiz_clicks');
-  const quizzesQuery = collection(firestore, 'quizzes');
+  const quizClicksQuery = useMemoFirebase(() => collection(firestore, 'quiz_clicks'), [firestore]);
+  const quizzesQuery = useMemoFirebase(() => collection(firestore, 'quizzes'), [firestore]);
 
   const { data: quizClicks, isLoading: clicksLoading, error: clicksError } = useCollection<QuizClick>(quizClicksQuery);
   const { data: quizzes, isLoading: quizzesLoading, error: quizzesError } = useCollection<Quiz>(quizzesQuery);
