@@ -39,6 +39,12 @@ interface SalesPageClick {
   timestamp: string;
 }
 
+const buttonIdToName: Record<string, string> = {
+  'scroll-to-offer-cta': 'Autor (Quero Transformar meu Corpo)',
+  'main-checkout-cta': 'Botão Principal (Quero Acesso Imediato)',
+  'footer-checkout-cta': 'Rodapé (Sim, Quero meu Acesso!)'
+};
+
 export default function AdminPage() {
   const auth = useAuth();
   const { user, isUserLoading } = useUser();
@@ -213,7 +219,7 @@ export default function AdminPage() {
                         <TableBody>
                             {Object.entries(salesButtonClicks).map(([buttonId, count]) => (
                                 <TableRow key={buttonId}>
-                                    <TableCell className="font-medium">{buttonId}</TableCell>
+                                    <TableCell className="font-medium">{buttonIdToName[buttonId] || buttonId}</TableCell>
                                     <TableCell className='text-right'>{count}</TableCell>
                                 </TableRow>
                             ))}
@@ -231,5 +237,3 @@ export default function AdminPage() {
     </div>
   );
 }
-
-    
