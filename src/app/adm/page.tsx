@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { useCollection, useUser, useAuth, useMemoFirebase } from '@/firebase';
-import { collection, getFirestore } from 'firebase/firestore';
+import { collection, getFirestore, query, where } from 'firebase/firestore';
 import { signInAnonymously } from 'firebase/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -40,7 +40,10 @@ export default function AdminPage() {
   const { user, isUserLoading } = useUser();
   const firestore = getFirestore();
 
-  const quizClicksQuery = useMemoFirebase(() => collection(firestore, 'quiz_clicks'), [firestore]);
+  const quizClicksQuery = useMemoFirebase(
+    () => (user ? collection(firestore, 'quiz_clicks') : null),
+    [firestore, user]
+  );
   const quizzesQuery = useMemoFirebase(() => collection(firestore, 'quizzes'), [firestore]);
 
   const { data: quizClicks, isLoading: clicksLoading, error: clicksError } = useCollection<QuizClick>(quizClicksQuery);
@@ -90,14 +93,17 @@ export default function AdminPage() {
   }, [quizzes, quizClicks]);
 
   const handleAnonymousSignIn = async () => {
+    if (!auth) return;
     try {
       await signInAnonymously(auth);
     } catch (error) {
       console.error("Anonymous sign-in failed", error);
     }
   };
+  
+  const isLoading = isUserLoading || clicksLoading || quizzesLoading;
 
-  if (isUserLoading || clicksLoading || quizzesLoading) {
+  if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -114,7 +120,7 @@ export default function AdminPage() {
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-4">
             <p className="text-center text-muted-foreground">
-              Você precisa estar autenticado para ver esta página.
+              Você precisa se autenticar para ver esta página.
             </p>
             <Button onClick={handleAnonymousSignIn}>Entrar como Anônimo</Button>
           </CardContent>
