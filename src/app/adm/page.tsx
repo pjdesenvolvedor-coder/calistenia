@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useCollection, useUser, useAuth, useMemoFirebase } from '@/firebase';
-import { collection, getFirestore, query, where } from 'firebase/firestore';
+import { collection, getFirestore } from 'firebase/firestore';
 import { signInAnonymously } from 'firebase/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -44,60 +44,62 @@ export default function AdminPage() {
     () => (user ? collection(firestore, 'quiz_clicks') : null),
     [firestore, user]
   );
-  const quizzesQuery = useMemoFirebase(() => collection(firestore, 'quizzes'), [firestore]);
+  const quizzesQuery = useMemoFirebase(() => (firestore ? collection(firestore, 'quizzes') : null), [firestore]);
 
-  const { data: quizClicks, isLoading: clicksLoading, error: clicksError } = useCollection<QuizClick>(quizClicksQuery);
-  const { data: quizzes, isLoading: quizzesLoading, error: quizzesError } = useCollection<Quiz>(quizzesQuery);
+  const { data: quizClicks, isLoading: clicksLoading } = useCollection<QuizClick>(quizClicksQuery);
+  const { data: quizzes, isLoading: quizzesLoading } = useCollection<Quiz>(quizzesQuery);
   
   const [aggregatedData, setAggregatedData] = useState<AggregatedClicks>({});
-  const [isAdmin, setIsAdmin] = useState(true); // Assume admin until an error proves otherwise
 
   useEffect(() => {
-    if (clicksError) {
-      setIsAdmin(false);
-    }
-  }, [clicksError]);
-
-  useEffect(() => {
-    // We can still aggregate data even if there are no clicks, but we have quizzes.
-    if (quizzes) {
-      const clicksByQuiz = quizClicks?.reduce((acc, click) => {
+    if (quizzes && quizClicks) {
+      const clicksByQuiz = quizClicks.reduce((acc, click) => {
         acc[click.quizId] = (acc[click.quizId] || 0) + 1;
         return acc;
-      }, {} as { [key: string]: number }) || {};
+      }, {} as { [key: string]: number });
 
       const quizMap = quizzes.reduce((acc, quiz) => {
         acc[quiz.id] = quiz.title;
         return acc;
       }, {} as { [key: string]: string });
-
-      // Ensure a default entry for the main quiz
-      const defaultQuizId = 'calisthenics-quiz';
-      if (!quizMap[defaultQuizId]) {
-        quizMap[defaultQuizId] = 'Quiz de Calistenia';
-      }
-
+      
       const finalData: AggregatedClicks = {};
-      
-      // Create entries for all known quizzes
-      for (const quizId in quizMap) {
-        finalData[quizId] = {
-          count: clicksByQuiz[quizId] || 0,
-          title: quizMap[quizId],
-        };
+      for (const quizId in clicksByQuiz) {
+        if (quizMap[quizId]) {
+          finalData[quizId] = {
+            count: clicksByQuiz[quizId],
+            title: quizMap[quizId],
+          };
+        }
       }
-      
-      // Ensure default quiz is present if not already added
-      if (!finalData[defaultQuizId]) {
-         finalData[defaultQuizId] = {
-           count: clicksByQuiz[defaultQuizId] || 0,
-           title: quizMap[defaultQuizId],
-         };
+
+      // Ensure a default entry for the main quiz if it has clicks but isn't in the quizzes collection
+      const defaultQuizId = 'calisthenics-quiz';
+      if (clicksByQuiz[defaultQuizId] && !finalData[defaultQuizId]) {
+        finalData[defaultQuizId] = {
+          count: clicksByQuiz[defaultQuizId],
+          title: 'Quiz de Calistenia', // Fallback title
+        };
       }
 
       setAggregatedData(finalData);
+    } else if (quizzes && !quizClicks) {
+        // Handle case where there are quizzes but no clicks yet
+        const initialData = quizzes.reduce((acc, quiz) => {
+            acc[quiz.id] = { count: 0, title: quiz.title };
+            return acc;
+        }, {} as AggregatedClicks);
+        
+        // Ensure default quiz is present
+        const defaultQuizId = 'calisthenics-quiz';
+        if (!initialData[defaultQuizId]) {
+            initialData[defaultQuizId] = { count: 0, title: 'Quiz de Calistenia' };
+        }
+
+        setAggregatedData(initialData);
     }
   }, [quizzes, quizClicks]);
+
 
   const handleAnonymousSignIn = async () => {
     if (!auth) return;
@@ -108,8 +110,7 @@ export default function AdminPage() {
     }
   };
   
-  // Clicks are not essential for the page to load, but user and quizzes are.
-  const isLoading = isUserLoading || quizzesLoading;
+  const isLoading = isUserLoading || quizzesLoading || clicksLoading;
 
   if (isLoading) {
     return (
@@ -136,24 +137,6 @@ export default function AdminPage() {
       </div>
     );
   }
-  
-  if (quizzesError) {
-      return (
-        <div className="flex min-h-screen items-center justify-center bg-background p-4 text-center">
-          <Card className="max-w-lg p-6 border-destructive">
-            <CardHeader>
-              <CardTitle className="text-destructive">Erro ao Carregar Dados</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-destructive-foreground">Não foi possível carregar os dados das enquetes.</p>
-              <p className="mt-2 text-sm text-muted-foreground">
-               Por favor, verifique sua conexão ou as permissões do Firestore.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      );
-  }
 
   return (
     <div className="container mx-auto p-4 md:p-8">
@@ -162,17 +145,6 @@ export default function AdminPage() {
           <CardTitle>Cliques por Enquete</CardTitle>
         </CardHeader>
         <CardContent>
-          {!isAdmin && (
-             <div className="mb-6 max-w-2xl mx-auto bg-destructive/10 p-4 rounded-lg border border-destructive/20 text-center">
-                <h3 className="font-bold text-destructive">Acesso de Administrador Necessário</h3>
-                <p className="mt-2 text-sm text-destructive/90">
-                  Sua conta (<code className="bg-muted px-1.5 py-0.5 rounded-sm text-xs font-mono">{user.uid}</code>) não tem permissão para visualizar as estatísticas de cliques.
-                </p>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Para obter acesso, adicione um documento na coleção <code className="bg-muted px-1.5 py-0.5 rounded-sm text-xs font-mono">roles_admin</code> com o ID do seu usuário no <a href="https://console.firebase.google.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">Console do Firebase</a>.
-                </p>
-              </div>
-          )}
           <Table>
             <TableHeader>
               <TableRow>
@@ -185,13 +157,13 @@ export default function AdminPage() {
                 Object.entries(aggregatedData).map(([quizId, data]) => (
                   <TableRow key={quizId}>
                     <TableCell className="font-medium">{data.title}</TableCell>
-                    <TableCell className="text-right">{isAdmin ? data.count : 'N/A'}</TableCell>
+                    <TableCell className="text-right">{data.count}</TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
                   <TableCell colSpan={2} className="text-center text-muted-foreground">
-                    Nenhuma enquete encontrada.
+                    Nenhum clique registrado ainda.
                   </TableCell>
                 </TableRow>
               )}
