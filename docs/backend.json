@@ -105,6 +105,35 @@
         "attemptedAt"
       ]
     },
+    "QuizAnswer": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "QuizAnswer",
+      "description": "Represents a user's full set of answers for a quiz attempt.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who took the quiz."
+        },
+        "answers": {
+          "type": "object",
+          "description": "A map of question titles to the user's answers.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the quiz was completed."
+        }
+      },
+      "required": [
+        "userId",
+        "answers",
+        "createdAt"
+      ]
+    },
     "AnsweredQuestion": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "AnsweredQuestion",
@@ -227,6 +256,22 @@
             {
               "name": "quizId",
               "description": "Unique identifier for the quiz."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/quiz_answers/{quizAnswerId}",
+        "definition": {
+          "entityName": "QuizAnswer",
+          "schema": {
+            "$ref": "#/backend/entities/QuizAnswer"
+          },
+          "description": "Stores detailed answers for each quiz attempt.",
+          "params": [
+            {
+              "name": "quizAnswerId",
+              "description": "Unique identifier for the quiz answer set."
             }
           ]
         }

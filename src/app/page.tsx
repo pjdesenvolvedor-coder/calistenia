@@ -13,6 +13,7 @@ import { quizData } from "@/lib/quiz-data";
 import { LoadingScreen } from "@/components/quiz/loading-screen";
 import { addDocumentNonBlocking } from "@/firebase";
 import { collection, getFirestore } from "firebase/firestore";
+import { useUser } from "@/firebase";
 
 type QuizState = "welcome" | "in-progress" | "loading" | "results";
 type Answers = Record<string, string>;
@@ -24,14 +25,14 @@ export default function Home() {
   const [recommendation, setRecommendation] = useState<ProductRecommendationOutput | null>(null);
   const { toast } = useToast();
   const firestore = getFirestore();
+  const { user } = useUser();
 
   const handleStart = () => {
-    // Track quiz click
-    const quizId = "calisthenics-quiz"; // Example ID, can be made dynamic
+    const quizId = "calisthenics-quiz";
     const clicksCollection = collection(firestore, 'quiz_clicks');
-    addDocumentNonBlocking(clicksCollection, { 
-      quizId: quizId, 
-      timestamp: new Date().toISOString() 
+    addDocumentNonBlocking(clicksCollection, {
+      quizId: quizId,
+      timestamp: new Date().toISOString()
     });
 
     setQuizState("in-progress");
@@ -44,13 +45,36 @@ export default function Home() {
     setQuizState("welcome");
   };
 
+  const saveAnswersAndFinish = useCallback((finalAnswers: Answers) => {
+    const answersCollection = collection(firestore, 'quiz_answers');
+    addDocumentNonBlocking(answersCollection, {
+        userId: user?.uid || 'anonymous',
+        answers: finalAnswers,
+        createdAt: new Date().toISOString(),
+    });
+
+    const mainGoal = finalAnswers['Qual o seu principal objetivo ao iniciar este desafio?'] || "Secar gordura do corpo";
+    const staticRecommendation: ProductRecommendationOutput = {
+        recommendedProduct: "Definição Muscular",
+        reasoning: `Com base nas suas respostas, seu objetivo é ${mainGoal.toLowerCase()}`
+    };
+    setRecommendation(staticRecommendation);
+    setQuizState("results");
+  }, [firestore, user]);
+
   const advanceToNextQuestion = useCallback(() => {
     if (currentQuestionIndex < quizData.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       setQuizState("loading");
+      // When the last question is answered, call getRecommendation which will then call saveAnswersAndFinish
     }
   }, [currentQuestionIndex]);
+  
+  const getRecommendation = useCallback(() => {
+    saveAnswersAndFinish(answers);
+  }, [answers, saveAnswersAndFinish]);
+
 
   const handleAnswer = (question: string, answer: string) => {
     const newAnswers = { ...answers, [question]: answer };
@@ -70,18 +94,6 @@ export default function Home() {
     advanceToNextQuestion();
   };
   
-  // This function now provides a static recommendation to bypass the AI flow.
-  const getRecommendation = useCallback(() => {
-    const mainGoal = answers['Qual o seu principal objetivo ao iniciar este desafio?'] || "Secar gordura e definir o corpo";
-    const staticRecommendation: ProductRecommendationOutput = {
-      recommendedProduct: "Definição Muscular",
-      reasoning: `Com base nas suas respostas, seu objetivo é ${mainGoal.toLowerCase()}`
-    };
-    setRecommendation(staticRecommendation);
-    setQuizState("results");
-  }, [answers]);
-
-
   const renderContent = () => {
     const currentQuestion = quizData[currentQuestionIndex];
 
