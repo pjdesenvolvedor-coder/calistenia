@@ -29,10 +29,11 @@ export default function Home() {
 
   const handleStart = () => {
     const quizId = "calisthenics-quiz";
-    const clicksCollection = collection(firestore, 'quiz_clicks');
-    addDocumentNonBlocking(clicksCollection, {
+    const attemptsCollection = collection(firestore, 'quiz_attempts');
+    addDocumentNonBlocking(attemptsCollection, {
       quizId: quizId,
-      timestamp: new Date().toISOString()
+      userId: user?.uid || 'anonymous',
+      attemptedAt: new Date().toISOString()
     });
 
     setQuizState("in-progress");
