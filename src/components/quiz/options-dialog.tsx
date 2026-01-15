@@ -35,7 +35,7 @@ export function OptionsDialog({ children, onStartQuiz, onPremadeWorkout }: Optio
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-w-[576px]">
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Como gostaria de prosseguir?</DialogTitle>
           <DialogDescription>
@@ -52,7 +52,7 @@ export function OptionsDialog({ children, onStartQuiz, onPremadeWorkout }: Optio
               <ListChecks className="h-6 w-6 mt-1 text-primary flex-shrink-0" />
               <div>
                 <p className="font-semibold">Treino Personalizado</p>
-                <p className="text-sm text-muted-foreground whitespace-nowrap">
+                <p className="text-sm text-muted-foreground">
                   Responda um questionário de menos de 1 minuto.
                 </p>
               </div>
