@@ -98,7 +98,7 @@ export function SalesPage({ recommendation, onRetake }: SalesPageProps) {
 
   const handleCheckout = () => {
     trackClick('main-checkout-cta');
-    window.location.href = 'https://pay.lowify.com.br/checkout?product_id=ifaK3n';
+    window.location.href = 'https://pay.cakto.com.br/36swazv_726395';
   };
 
 
