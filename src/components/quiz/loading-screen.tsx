@@ -77,35 +77,38 @@ export function LoadingScreen({
         </div>
 
         <div className="flex-grow flex items-center justify-center my-6">
-            <Carousel 
-              className="w-full max-w-[200px] sm:max-w-xs mx-auto"
-              plugins={[autoplayPlugin.current]}
-              opts={{
-                loop: true,
-              }}
-            >
-              <CarouselContent>
-                {carouselImages.map((image) => (
-                  <CarouselItem key={image.id}>
-                    <div className="p-1">
-                        <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg">
-                          <Image
-                            src={image.imageUrl}
-                            alt={image.description}
-                            fill
-                            className="object-cover"
-                            data-ai-hint={image.imageHint}
-                            sizes="(max-width: 640px) 150px, 200px"
-                            priority={carouselImages.indexOf(image) < 2}
-                          />
-                        </div>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-               <CarouselPrevious />
-               <CarouselNext />
-            </Carousel>
+            <div className="flex flex-col items-center gap-4">
+              <p className="font-headline text-2xl font-bold uppercase tracking-wider">Antes e Depois do Método</p>
+              <Carousel 
+                className="w-full max-w-[200px] sm:max-w-xs mx-auto"
+                plugins={[autoplayPlugin.current]}
+                opts={{
+                  loop: true,
+                }}
+              >
+                <CarouselContent>
+                  {carouselImages.map((image) => (
+                    <CarouselItem key={image.id}>
+                      <div className="p-1">
+                          <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg">
+                            <Image
+                              src={image.imageUrl}
+                              alt={image.description}
+                              fill
+                              className="object-cover"
+                              data-ai-hint={image.imageHint}
+                              sizes="(max-width: 640px) 150px, 200px"
+                              priority={carouselImages.indexOf(image) < 2}
+                            />
+                          </div>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
+            </div>
         </div>
       </CardContent>
     </Card>
