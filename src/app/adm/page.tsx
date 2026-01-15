@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useCollection, useUser, useAuth, useMemoFirebase } from '@/firebase';
-import { collection, getFirestore, query, getDocs, writeBatch, deleteDoc, doc } from 'firebase/firestore';
+import { collection, getFirestore, query, getDocs, writeBatch } from 'firebase/firestore';
 import { signInAnonymously } from 'firebase/auth';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import {
@@ -17,7 +17,6 @@ import { Button } from '@/components/ui/button';
 import { Loader2, Trash2 } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -215,12 +214,11 @@ export default function AdminPage() {
 
   return (
     <div className="container mx-auto p-4 md:p-8">
-      <Card>
-        <CardHeader>
-          <div className='flex justify-between items-center'>
+      <header className="mb-8">
+        <div className='flex justify-between items-center'>
             <div>
-                <CardTitle>Administração do Quiz</CardTitle>
-                <CardDescription>Veja as respostas completas e as tentativas abandonadas.</CardDescription>
+                <h1 className="text-3xl font-bold">Administração do Quiz</h1>
+                <p className="text-muted-foreground">Veja as respostas completas, tentativas abandonadas e cliques.</p>
             </div>
             <AlertDialog>
                 <AlertDialogTrigger asChild>
@@ -233,7 +231,7 @@ export default function AdminPage() {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Esta ação não pode ser desfeita. Todos os dados de respostas, tentativas e cliques na página de vendas serão apagados permanentemente.
+                            Esta ação não pode ser desfeita. Todos os dados de respostas, tentativas e cliques serão apagados permanentemente.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -244,19 +242,17 @@ export default function AdminPage() {
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="completed">
-            <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="completed">Respostas ({quizAnswers?.length || 0})</TabsTrigger>
-              <TabsTrigger value="incomplete">Abandonos ({incompleteAttempts.length || 0})</TabsTrigger>
-              <TabsTrigger value="initial-clicks">Cliques Iniciais ({initialClicks?.length || 0})</TabsTrigger>
-              <TabsTrigger value="option-clicks">Cliques de Opção ({optionClicks?.length || 0})</TabsTrigger>
-              <TabsTrigger value="sales-clicks">Cliques na Venda ({salesPageClicks?.length || 0})</TabsTrigger>
-            </TabsList>
-            <TabsContent value="completed">
-                {quizAnswers && quizAnswers.length > 0 ? (
+        </div>
+      </header>
+      
+      <main className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Card className="col-span-full">
+            <CardHeader>
+                <CardTitle>Respostas Completas ({quizAnswers?.length || 0})</CardTitle>
+                <CardDescription>Respostas de usuários que completaram o quiz.</CardDescription>
+            </CardHeader>
+            <CardContent>
+            {quizAnswers && quizAnswers.length > 0 ? (
                 <Accordion type="single" collapsible className="w-full">
                   {quizAnswers.map((attempt) => (
                     <AccordionItem value={attempt.id} key={attempt.id}>
@@ -289,12 +285,19 @@ export default function AdminPage() {
                 </Accordion>
               ) : (
                 <div className="text-center text-muted-foreground py-8">
-                  Nenhuma resposta de enquete registrada ainda.
+                  Nenhuma resposta registrada ainda.
                 </div>
               )}
-            </TabsContent>
-            <TabsContent value="incomplete">
-                {incompleteAttempts.length > 0 ? (
+            </CardContent>
+        </Card>
+
+        <Card className="lg:col-span-2">
+            <CardHeader>
+                <CardTitle>Abandonos de Quiz ({incompleteAttempts.length || 0})</CardTitle>
+                <CardDescription>Usuários que iniciaram o quiz, mas não finalizaram.</CardDescription>
+            </CardHeader>
+            <CardContent>
+            {incompleteAttempts.length > 0 ? (
                      <Table>
                         <TableHeader>
                             <TableRow>
@@ -322,9 +325,16 @@ export default function AdminPage() {
                         Nenhuma tentativa incompleta registrada.
                     </div>
                 )}
-            </TabsContent>
-            <TabsContent value="initial-clicks">
-                {initialClicks && initialClicks.length > 0 ? (
+            </CardContent>
+        </Card>
+
+        <Card>
+            <CardHeader>
+                <CardTitle>Cliques Iniciais ({initialClicks?.length || 0})</CardTitle>
+                <CardDescription>Total de cliques no botão "Montar meu Treino".</CardDescription>
+            </CardHeader>
+            <CardContent>
+            {initialClicks && initialClicks.length > 0 ? (
                      <Table>
                         <TableHeader>
                             <TableRow>
@@ -334,7 +344,7 @@ export default function AdminPage() {
                         </TableHeader>
                         <TableBody>
                             <TableRow>
-                                <TableCell className="font-medium">Botão Inicial (Montar Meu Treino)</TableCell>
+                                <TableCell className="font-medium">Botão Inicial</TableCell>
                                 <TableCell className='text-right'>{initialClicks.length}</TableCell>
                             </TableRow>
                         </TableBody>
@@ -344,9 +354,16 @@ export default function AdminPage() {
                         Nenhum clique inicial registrado.
                     </div>
                 )}
-            </TabsContent>
-            <TabsContent value="option-clicks">
-                {Object.keys(optionButtonClicks).length > 0 ? (
+            </CardContent>
+        </Card>
+
+        <Card>
+            <CardHeader>
+                <CardTitle>Cliques de Opção ({optionClicks?.length || 0})</CardTitle>
+                <CardDescription>Escolha entre treino personalizado ou pré-pronto.</CardDescription>
+            </CardHeader>
+            <CardContent>
+            {Object.keys(optionButtonClicks).length > 0 ? (
                      <Table>
                         <TableHeader>
                             <TableRow>
@@ -368,9 +385,16 @@ export default function AdminPage() {
                         Nenhum clique de opção registrado.
                     </div>
                 )}
-            </TabsContent>
-             <TabsContent value="sales-clicks">
-                {Object.keys(salesButtonClicks).length > 0 ? (
+            </CardContent>
+        </Card>
+        
+        <Card className="lg:col-span-2">
+            <CardHeader>
+                <CardTitle>Cliques na Página de Venda ({salesPageClicks?.length || 0})</CardTitle>
+                <CardDescription>Cliques nos botões de checkout na página de vendas.</CardDescription>
+            </CardHeader>
+            <CardContent>
+            {Object.keys(salesButtonClicks).length > 0 ? (
                      <Table>
                         <TableHeader>
                             <TableRow>
@@ -392,12 +416,9 @@ export default function AdminPage() {
                         Nenhum clique na página de vendas registrado.
                     </div>
                 )}
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+            </CardContent>
+        </Card>
+      </main>
     </div>
   );
 }
-
-    
