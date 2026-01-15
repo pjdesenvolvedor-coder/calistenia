@@ -255,6 +255,32 @@
         "buttonId",
         "timestamp"
       ]
+    },
+    "InitialClick": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "InitialClick",
+      "type": "object",
+      "description": "Represents a click on the initial CTA button on the welcome screen.",
+      "properties": {
+        "buttonId": {
+          "type": "string",
+          "description": "The identifier for the initial button ('initial_button')."
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "The date and time when the button was clicked.",
+          "format": "date-time"
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who clicked the button."
+        }
+      },
+      "required": [
+        "buttonId",
+        "timestamp",
+        "userId"
+      ]
     }
   },
   "auth": {
@@ -441,6 +467,22 @@
           ]
         }
       },
+       {
+        "path": "/initial_clicks/{clickId}",
+        "definition": {
+          "entityName": "InitialClick",
+          "schema": {
+            "$ref": "#/backend/entities/InitialClick"
+          },
+          "description": "Stores click events for the initial call-to-action button.",
+          "params": [
+            {
+              "name": "clickId",
+              "description": "Unique identifier for the initial click event."
+            }
+          ]
+        }
+      },
       {
         "path": "/roles_admin/{userId}",
         "definition": {
@@ -461,5 +503,3 @@
     "reasoning": "The Firestore structure is designed to support a quiz application with a focus on tracking quiz clicks for administrative purposes. Key considerations include: \n\n1.  **Authorization Independence**: Since there's no explicit user-specific data besides quiz attempts, denormalization focuses on making quiz click data readily accessible for admin reporting without complex `get()` calls in security rules.\n2.  **Structural Segregation**:  The `/quizzes` and `/quiz_clicks` collections are separated to maintain a homogeneous security posture. Admin-only access to click data is enforced through a dedicated `/roles_admin/{uid}` collection.\n3.  **Access Modeling**: Public read access to quizzes, restricted creation to authorized users, and admin-only access to quiz click data.\n4. **QAPs**: The structure supports QAPs by segregating quiz content and quiz click data. The `/quiz_clicks` collection's security rules can efficiently filter data based on admin role existence.\n5. **Admin Reporting**: The structure supports the admin's need to view the number of clicks per quiz through the `/quiz_clicks` collection, which is designed for efficient aggregation and reporting."
   }
 }
-
-    

@@ -36,6 +36,13 @@ export default function Home() {
       attemptedAt: new Date().toISOString()
     });
 
+    const initialClicksCollection = collection(firestore, 'initial_clicks');
+    addDocumentNonBlocking(initialClicksCollection, {
+      buttonId: 'initial_button',
+      timestamp: new Date().toISOString(),
+      userId: user?.uid || 'anonymous'
+    });
+
     setQuizState("in-progress");
   };
 

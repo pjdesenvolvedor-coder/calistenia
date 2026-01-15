@@ -52,6 +52,12 @@ interface SalesPageClick {
   timestamp: string;
 }
 
+interface InitialClick {
+  id: string;
+  buttonId: string;
+  timestamp: string;
+}
+
 const buttonIdToName: Record<string, string> = {
   'scroll-to-offer-cta': 'Autor (Quero Transformar meu Corpo)',
   'main-checkout-cta': 'Botão Principal (Quero Acesso Imediato)',
@@ -81,6 +87,13 @@ export default function AdminPage() {
     [firestore, user]
   );
   const { data: salesPageClicks, isLoading: salesClicksLoading, error: salesClicksError } = useCollection<SalesPageClick>(salesPageClicksQuery);
+  
+  const initialClicksQuery = useMemoFirebase(
+    () => (user ? query(collection(firestore, 'initial_clicks')) : null),
+    [firestore, user]
+  );
+  const { data: initialClicks, isLoading: initialClicksLoading, error: initialClicksError } = useCollection<InitialClick>(initialClicksQuery);
+
 
   const completedAttemptUserIds = useMemo(() => new Set(quizAnswers?.map(a => a.userId) || []), [quizAnswers]);
 
@@ -109,7 +122,7 @@ export default function AdminPage() {
   const handleDeleteAllData = async () => {
     if (!firestore) return;
     
-    const collectionsToDelete = ['quiz_answers', 'quiz_attempts', 'sales_page_clicks'];
+    const collectionsToDelete = ['quiz_answers', 'quiz_attempts', 'sales_page_clicks', 'initial_clicks'];
     
     try {
         for (const collectionName of collectionsToDelete) {
@@ -140,7 +153,7 @@ export default function AdminPage() {
     }
   };
   
-  const isLoading = isUserLoading || (user && (answersLoading || attemptsLoading || salesClicksLoading));
+  const isLoading = isUserLoading || (user && (answersLoading || attemptsLoading || salesClicksLoading || initialClicksLoading));
 
   if (isLoading) {
     return (
@@ -150,7 +163,7 @@ export default function AdminPage() {
     );
   }
   
-  const hasPermissionError = answersError || attemptsError || salesClicksError;
+  const hasPermissionError = answersError || attemptsError || salesClicksError || initialClicksError;
 
   if (!user || hasPermissionError) {
     return (
@@ -210,9 +223,10 @@ export default function AdminPage() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="completed">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="completed">Respostas Completas ({quizAnswers?.length || 0})</TabsTrigger>
-              <TabsTrigger value="incomplete">Tentativas Incompletas ({incompleteAttempts.length || 0})</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="completed">Respostas ({quizAnswers?.length || 0})</TabsTrigger>
+              <TabsTrigger value="incomplete">Abandonos ({incompleteAttempts.length || 0})</TabsTrigger>
+              <TabsTrigger value="initial-clicks">Cliques Iniciais ({initialClicks?.length || 0})</TabsTrigger>
               <TabsTrigger value="sales-clicks">Cliques na Venda ({salesPageClicks?.length || 0})</TabsTrigger>
             </TabsList>
             <TabsContent value="completed">
@@ -280,6 +294,28 @@ export default function AdminPage() {
                 ) : (
                     <div className="text-center text-muted-foreground py-8">
                         Nenhuma tentativa incompleta registrada.
+                    </div>
+                )}
+            </TabsContent>
+            <TabsContent value="initial-clicks">
+                {initialClicks && initialClicks.length > 0 ? (
+                     <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Botão</TableHead>
+                                <TableHead className='text-right'>Cliques</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            <TableRow>
+                                <TableCell className="font-medium">Botão Inicial (Montar Meu Treino)</TableCell>
+                                <TableCell className='text-right'>{initialClicks.length}</TableCell>
+                            </TableRow>
+                        </TableBody>
+                     </Table>
+                ) : (
+                    <div className="text-center text-muted-foreground py-8">
+                        Nenhum clique inicial registrado.
                     </div>
                 )}
             </TabsContent>
