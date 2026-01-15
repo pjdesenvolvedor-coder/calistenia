@@ -35,20 +35,20 @@ export function OptionsDialog({ children, onStartQuiz, onPremadeWorkout }: Optio
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Como gostaria de prosseguir?</DialogTitle>
           <DialogDescription>
             Escolha a melhor opção para você.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-2">
+        <div className="grid gap-4">
           <Button
             variant="outline"
-            className="h-auto justify-start text-left"
+            className="h-auto justify-start text-left p-4"
             onClick={handleStartQuiz}
           >
-            <div className="flex items-start gap-4 p-2">
+            <div className="flex items-start gap-4">
               <ListChecks className="h-6 w-6 mt-1 text-primary flex-shrink-0" />
               <div>
                 <p className="font-semibold">Treino Personalizado</p>
@@ -60,10 +60,10 @@ export function OptionsDialog({ children, onStartQuiz, onPremadeWorkout }: Optio
           </Button>
           <Button
             variant="outline"
-            className="h-auto justify-start text-left"
+            className="h-auto justify-start text-left p-4"
             onClick={handlePremadeWorkout}
           >
-            <div className="flex items-start gap-4 p-2">
+            <div className="flex items-start gap-4">
               <Zap className="h-6 w-6 mt-1 text-primary flex-shrink-0" />
               <div>
                 <p className="font-semibold">Treino Pré-pronto</p>
