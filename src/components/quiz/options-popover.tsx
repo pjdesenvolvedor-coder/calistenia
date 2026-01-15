@@ -18,7 +18,7 @@ export function OptionsPopover({ children, onStartQuiz, onPremadeWorkout }: Opti
   return (
     <Popover>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
-      <PopoverContent className="w-[30rem]" align="center">
+      <PopoverContent className="w-[36rem]" align="center">
         <div className="grid gap-4">
           <div className="space-y-2">
             <h4 className="font-medium leading-none">Como gostaria de prosseguir?</h4>
