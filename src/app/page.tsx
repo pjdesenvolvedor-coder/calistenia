@@ -15,7 +15,7 @@ import { addDocumentNonBlocking } from "@/firebase";
 import { collection, getFirestore } from "firebase/firestore";
 import { useUser } from "@/firebase";
 import { Button } from "@/components/ui/button";
-import { OptionsPopover } from "@/components/quiz/options-popover";
+import { OptionsDialog } from "@/components/quiz/options-dialog";
 
 type QuizState = "welcome" | "in-progress" | "loading" | "results";
 type Answers = Record<string, string>;
@@ -118,11 +118,11 @@ export default function Home() {
         return (
           <div className="flex flex-col gap-4">
             <WelcomeScreen />
-            <OptionsPopover onStartQuiz={handleStart} onPremadeWorkout={handlePremadeWorkout}>
+            <OptionsDialog onStartQuiz={handleStart} onPremadeWorkout={handlePremadeWorkout}>
               <Button size="lg" className="w-full font-bold text-lg bg-green-500 hover:bg-green-600 text-black animate-pulse-scale">
                 MONTAR MEU TREINO AGORA &gt;
               </Button>
-            </OptionsPopover>
+            </OptionsDialog>
           </div>
         );
       case "in-progress":
@@ -179,11 +179,11 @@ export default function Home() {
         return (
            <div className="flex flex-col gap-4">
             <WelcomeScreen />
-             <OptionsPopover onStartQuiz={handleStart} onPremadeWorkout={handlePremadeWorkout}>
+             <OptionsDialog onStartQuiz={handleStart} onPremadeWorkout={handlePremadeWorkout}>
               <Button size="lg" className="w-full font-bold text-lg bg-green-500 hover:bg-green-600 text-black animate-pulse-scale">
                 MONTAR MEU TREINO AGORA &gt;
               </Button>
-            </OptionsPopover>
+            </OptionsDialog>
           </div>
         );
     }
