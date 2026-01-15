@@ -35,7 +35,7 @@ export function OptionsDialog({ children, onStartQuiz, onPremadeWorkout }: Optio
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] md:max-w-[576px]">
+      <DialogContent className="max-w-[576px]">
         <DialogHeader>
           <DialogTitle>Como gostaria de prosseguir?</DialogTitle>
           <DialogDescription>
