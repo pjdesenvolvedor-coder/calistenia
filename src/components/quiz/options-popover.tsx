@@ -18,7 +18,7 @@ export function OptionsPopover({ children, onStartQuiz, onPremadeWorkout }: Opti
   return (
     <Popover>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
-      <PopoverContent className="w-[26rem]" align="center">
+      <PopoverContent className="w-[30rem]" align="center">
         <div className="grid gap-4">
           <div className="space-y-2">
             <h4 className="font-medium leading-none">Como gostaria de prosseguir?</h4>
@@ -33,10 +33,10 @@ export function OptionsPopover({ children, onStartQuiz, onPremadeWorkout }: Opti
               onClick={onStartQuiz}
             >
               <div className="flex items-start gap-4 p-2">
-                <ListChecks className="h-6 w-6 mt-1 text-primary" />
+                <ListChecks className="h-6 w-6 mt-1 text-primary flex-shrink-0" />
                 <div>
                   <p className="font-semibold">Treino Personalizado</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground whitespace-nowrap">
                     Responda um questionário de menos de 1 minuto.
                   </p>
                 </div>
@@ -48,7 +48,7 @@ export function OptionsPopover({ children, onStartQuiz, onPremadeWorkout }: Opti
               onClick={onPremadeWorkout}
             >
               <div className="flex items-start gap-4 p-2">
-                <Zap className="h-6 w-6 mt-1 text-primary" />
+                <Zap className="h-6 w-6 mt-1 text-primary flex-shrink-0" />
                 <div>
                   <p className="font-semibold">Treino Pré-pronto</p>
                   <p className="text-sm text-muted-foreground">
