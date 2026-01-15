@@ -29,7 +29,18 @@ export default function Home() {
   const firestore = getFirestore();
   const { user } = useUser();
 
+  const trackOptionClick = (option: 'personalized' | 'premade') => {
+    const optionClicksCollection = collection(firestore, 'option_clicks');
+    addDocumentNonBlocking(optionClicksCollection, {
+      buttonId: option,
+      timestamp: new Date().toISOString(),
+      userId: user?.uid || 'anonymous'
+    });
+  };
+
   const handleStart = () => {
+    trackOptionClick('personalized');
+
     const quizId = "calisthenics-quiz";
     const attemptsCollection = collection(firestore, 'quiz_attempts');
     addDocumentNonBlocking(attemptsCollection, {
@@ -38,19 +49,22 @@ export default function Home() {
       attemptedAt: new Date().toISOString()
     });
 
+    setQuizState("in-progress");
+  };
+
+  const handlePremadeWorkout = () => {
+    trackOptionClick('premade');
+    setQuizState("loading");
+  };
+
+  const handleInitialClick = () => {
     const initialClicksCollection = collection(firestore, 'initial_clicks');
     addDocumentNonBlocking(initialClicksCollection, {
       buttonId: 'initial_button',
       timestamp: new Date().toISOString(),
       userId: user?.uid || 'anonymous'
     });
-
-    setQuizState("in-progress");
-  };
-
-  const handlePremadeWorkout = () => {
-    setQuizState("loading");
-  };
+  }
 
   const handleReset = () => {
     setAnswers({});
@@ -118,7 +132,9 @@ export default function Home() {
         return (
           <div className="flex flex-col gap-4">
             <WelcomeScreen />
-            <OptionsDialog onStartQuiz={handleStart} onPremadeWorkout={handlePremadeWorkout}>
+            <OptionsDialog onStartQuiz={handleStart} onPremadeWorkout={handlePremadeWorkout} onOpenChange={(open) => {
+              if(open) handleInitialClick();
+            }}>
               <Button size="lg" className="w-full font-bold text-lg bg-green-500 hover:bg-green-600 text-black animate-pulse-scale">
                 MONTAR MEU TREINO AGORA &gt;
               </Button>
@@ -179,7 +195,9 @@ export default function Home() {
         return (
            <div className="flex flex-col gap-4">
             <WelcomeScreen />
-             <OptionsDialog onStartQuiz={handleStart} onPremadeWorkout={handlePremadeWorkout}>
+             <OptionsDialog onStartQuiz={handleStart} onPremadeWorkout={handlePremadeWorkout} onOpenChange={(open) => {
+              if(open) handleInitialClick();
+            }}>
               <Button size="lg" className="w-full font-bold text-lg bg-green-500 hover:bg-green-600 text-black animate-pulse-scale">
                 MONTAR MEU TREINO AGORA &gt;
               </Button>
@@ -205,3 +223,5 @@ export default function Home() {
     </main>
   );
 }
+
+    

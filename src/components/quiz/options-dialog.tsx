@@ -7,7 +7,6 @@ import {
   DialogTitle,
   DialogDescription,
   DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Zap, ListChecks } from "lucide-react";
@@ -17,26 +16,32 @@ type OptionsDialogProps = {
   children: React.ReactNode;
   onStartQuiz: () => void;
   onPremadeWorkout: () => void;
+  onOpenChange?: (open: boolean) => void;
 };
 
-export function OptionsDialog({ children, onStartQuiz, onPremadeWorkout }: OptionsDialogProps) {
+export function OptionsDialog({ children, onStartQuiz, onPremadeWorkout, onOpenChange }: OptionsDialogProps) {
   const [open, setOpen] = useState(false);
   
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+    onOpenChange?.(isOpen);
+  }
+
   const handleStartQuiz = () => {
     onStartQuiz();
-    setOpen(false);
+    handleOpenChange(false);
   }
   
   const handlePremadeWorkout = () => {
     onPremadeWorkout();
-    setOpen(false);
+    handleOpenChange(false);
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
-        <DialogHeader className="text-center">
+        <DialogHeader className="text-center items-center">
           <DialogTitle>Como gostaria de prosseguir?</DialogTitle>
           <DialogDescription>
             Escolha a melhor opção para você.
@@ -45,7 +50,7 @@ export function OptionsDialog({ children, onStartQuiz, onPremadeWorkout }: Optio
         <div className="grid gap-4">
           <Button
             variant="outline"
-            className="h-auto justify-center text-center p-3"
+            className="h-auto justify-center p-3"
             onClick={handleStartQuiz}
           >
             <div className="flex flex-col items-center gap-1.5 text-center">
@@ -60,7 +65,7 @@ export function OptionsDialog({ children, onStartQuiz, onPremadeWorkout }: Optio
           </Button>
           <Button
             variant="outline"
-            className="h-auto justify-center text-center p-3"
+            className="h-auto justify-center p-3"
             onClick={handlePremadeWorkout}
           >
             <div className="flex flex-col items-center gap-1.5 text-center">
@@ -78,3 +83,5 @@ export function OptionsDialog({ children, onStartQuiz, onPremadeWorkout }: Optio
     </Dialog>
   );
 }
+
+    

@@ -58,11 +58,23 @@ interface InitialClick {
   timestamp: string;
 }
 
+interface OptionClick {
+  id: string;
+  buttonId: string;
+  timestamp: string;
+}
+
 const buttonIdToName: Record<string, string> = {
   'scroll-to-offer-cta': 'Autor (Quero Transformar meu Corpo)',
   'main-checkout-cta': 'Botão Principal (Quero Acesso Imediato)',
   'footer-checkout-cta': 'Rodapé (Sim, Quero meu Acesso!)'
 };
+
+const optionButtonIdToName: Record<string, string> = {
+  'personalized': 'Treino Personalizado',
+  'premade': 'Treino Pré-pronto'
+};
+
 
 export default function AdminPage() {
   const auth = useAuth();
@@ -93,6 +105,12 @@ export default function AdminPage() {
     [firestore, user]
   );
   const { data: initialClicks, isLoading: initialClicksLoading, error: initialClicksError } = useCollection<InitialClick>(initialClicksQuery);
+  
+  const optionClicksQuery = useMemoFirebase(
+    () => (user ? query(collection(firestore, 'option_clicks')) : null),
+    [firestore, user]
+  );
+  const { data: optionClicks, isLoading: optionClicksLoading, error: optionClicksError } = useCollection<OptionClick>(optionClicksQuery);
 
 
   const completedAttemptUserIds = useMemo(() => new Set(quizAnswers?.map(a => a.userId) || []), [quizAnswers]);
@@ -108,6 +126,13 @@ export default function AdminPage() {
       return acc;
     }, {} as Record<string, number>) || {};
   }, [salesPageClicks]);
+  
+  const optionButtonClicks = useMemo(() => {
+    return optionClicks?.reduce((acc, click) => {
+      acc[click.buttonId] = (acc[click.buttonId] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>) || {};
+  }, [optionClicks]);
 
 
   const handleAnonymousSignIn = async () => {
@@ -122,7 +147,7 @@ export default function AdminPage() {
   const handleDeleteAllData = async () => {
     if (!firestore) return;
     
-    const collectionsToDelete = ['quiz_answers', 'quiz_attempts', 'sales_page_clicks', 'initial_clicks'];
+    const collectionsToDelete = ['quiz_answers', 'quiz_attempts', 'sales_page_clicks', 'initial_clicks', 'option_clicks'];
     
     try {
         for (const collectionName of collectionsToDelete) {
@@ -153,7 +178,7 @@ export default function AdminPage() {
     }
   };
   
-  const isLoading = isUserLoading || (user && (answersLoading || attemptsLoading || salesClicksLoading || initialClicksLoading));
+  const isLoading = isUserLoading || (user && (answersLoading || attemptsLoading || salesClicksLoading || initialClicksLoading || optionClicksLoading));
 
   if (isLoading) {
     return (
@@ -163,7 +188,7 @@ export default function AdminPage() {
     );
   }
   
-  const hasPermissionError = answersError || attemptsError || salesClicksError || initialClicksError;
+  const hasPermissionError = answersError || attemptsError || salesClicksError || initialClicksError || optionClicksError;
 
   if (!user || hasPermissionError) {
     return (
@@ -223,10 +248,11 @@ export default function AdminPage() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="completed">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="completed">Respostas ({quizAnswers?.length || 0})</TabsTrigger>
               <TabsTrigger value="incomplete">Abandonos ({incompleteAttempts.length || 0})</TabsTrigger>
               <TabsTrigger value="initial-clicks">Cliques Iniciais ({initialClicks?.length || 0})</TabsTrigger>
+              <TabsTrigger value="option-clicks">Cliques de Opção ({optionClicks?.length || 0})</TabsTrigger>
               <TabsTrigger value="sales-clicks">Cliques na Venda ({salesPageClicks?.length || 0})</TabsTrigger>
             </TabsList>
             <TabsContent value="completed">
@@ -319,6 +345,30 @@ export default function AdminPage() {
                     </div>
                 )}
             </TabsContent>
+            <TabsContent value="option-clicks">
+                {Object.keys(optionButtonClicks).length > 0 ? (
+                     <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Opção</TableHead>
+                                <TableHead className='text-right'>Cliques</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {Object.entries(optionButtonClicks).map(([buttonId, count]) => (
+                                <TableRow key={buttonId}>
+                                    <TableCell className="font-medium">{optionButtonIdToName[buttonId] || buttonId}</TableCell>
+                                    <TableCell className='text-right'>{count}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                     </Table>
+                ) : (
+                    <div className="text-center text-muted-foreground py-8">
+                        Nenhum clique de opção registrado.
+                    </div>
+                )}
+            </TabsContent>
              <TabsContent value="sales-clicks">
                 {Object.keys(salesButtonClicks).length > 0 ? (
                      <Table>
@@ -349,3 +399,5 @@ export default function AdminPage() {
     </div>
   );
 }
+
+    
