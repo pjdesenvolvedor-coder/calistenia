@@ -33,6 +33,8 @@ export function WelcomeScreen({ onStart }: WelcomeScreenProps) {
         <p className="max-w-md text-base text-neutral-300 mb-8">
             Responda algumas perguntas rápidas para montar seu cronograma ideal para seu corpo, rotina e objetivos.
         </p>
+      </div>
+      <div className="relative z-20 w-full">
         <Button onClick={onStart} size="lg" className="w-full font-bold text-lg bg-green-500 hover:bg-green-600 text-black animate-pulse-scale">
           MONTAR MEU TREINO AGORA &gt;
         </Button>
