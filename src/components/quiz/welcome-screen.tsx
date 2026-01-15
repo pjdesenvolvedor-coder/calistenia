@@ -1,13 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 
-type WelcomeScreenProps = {
-  onStart: () => void;
-};
-
-export function WelcomeScreen({ onStart }: WelcomeScreenProps) {
+export function WelcomeScreen() {
   return (
     <div className="relative flex flex-col items-center justify-center text-center text-white p-4 rounded-lg overflow-hidden animate-in fade-in zoom-in-95 duration-500">
       <Image
@@ -32,11 +27,6 @@ export function WelcomeScreen({ onStart }: WelcomeScreenProps) {
         <p className="max-w-md text-base text-neutral-300 mb-8">
             Responda algumas perguntas rápidas para montar seu cronograma ideal para seu corpo, rotina e objetivos.
         </p>
-      </div>
-      <div className="relative z-20 w-full">
-        <Button onClick={onStart} size="lg" className="w-full font-bold text-lg bg-green-500 hover:bg-green-600 text-black animate-pulse-scale">
-          MONTAR MEU TREINO AGORA &gt;
-        </Button>
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ import { LoadingScreen } from "@/components/quiz/loading-screen";
 import { addDocumentNonBlocking } from "@/firebase";
 import { collection, getFirestore } from "firebase/firestore";
 import { useUser } from "@/firebase";
+import { Button } from "@/components/ui/button";
 
 type QuizState = "welcome" | "in-progress" | "loading" | "results";
 type Answers = Record<string, string>;
@@ -107,7 +108,14 @@ export default function Home() {
 
     switch (quizState) {
       case "welcome":
-        return <WelcomeScreen onStart={handleStart} />;
+        return (
+          <div className="flex flex-col gap-4">
+            <WelcomeScreen />
+            <Button onClick={handleStart} size="lg" className="w-full font-bold text-lg bg-green-500 hover:bg-green-600 text-black animate-pulse-scale">
+              MONTAR MEU TREINO AGORA &gt;
+            </Button>
+          </div>
+        );
       case "in-progress":
         if (!currentQuestion) return null;
 
@@ -159,7 +167,14 @@ export default function Home() {
           <ResultScreen answers={answers} recommendation={recommendation} onRetake={handleReset} />
         ) : null;
       default:
-        return <WelcomeScreen onStart={handleStart} />;
+        return (
+           <div className="flex flex-col gap-4">
+            <WelcomeScreen />
+            <Button onClick={handleStart} size="lg" className="w-full font-bold text-lg bg-green-500 hover:bg-green-600 text-black animate-pulse-scale">
+              MONTAR MEU TREINO AGORA &gt;
+            </Button>
+          </div>
+        );
     }
   };
 
