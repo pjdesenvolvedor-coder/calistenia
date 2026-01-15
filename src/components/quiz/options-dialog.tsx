@@ -45,30 +45,30 @@ export function OptionsDialog({ children, onStartQuiz, onPremadeWorkout }: Optio
         <div className="grid gap-4">
           <Button
             variant="outline"
-            className="h-auto justify-center text-center p-4"
+            className="h-auto justify-center text-center p-3"
             onClick={handleStartQuiz}
           >
-            <div className="flex flex-col items-center gap-2">
-              <ListChecks className="h-6 w-6 text-primary" />
+            <div className="flex flex-col items-center gap-1.5 text-center">
+              <ListChecks className="h-5 w-5 text-primary" />
               <div>
-                <p className="font-semibold">Treino Personalizado</p>
-                <p className="text-sm text-muted-foreground">
-                  Responda um questionário de menos de 1 minuto.
+                <p className="font-semibold text-sm">Treino Personalizado</p>
+                <p className="text-xs text-muted-foreground">
+                  Responda um questionário rápido.
                 </p>
               </div>
             </div>
           </Button>
           <Button
             variant="outline"
-            className="h-auto justify-center text-center p-4"
+            className="h-auto justify-center text-center p-3"
             onClick={handlePremadeWorkout}
           >
-            <div className="flex flex-col items-center gap-2">
-              <Zap className="h-6 w-6 text-primary" />
+            <div className="flex flex-col items-center gap-1.5 text-center">
+              <Zap className="h-5 w-5 text-primary" />
               <div>
-                <p className="font-semibold">Treino Pré-pronto</p>
-                <p className="text-sm text-muted-foreground">
-                  Receba um treino rápido baseado no que funciona para a maioria.
+                <p className="font-semibold text-sm">Treino Pré-pronto</p>
+                <p className="text-xs text-muted-foreground">
+                  Receba um treino para a maioria.
                 </p>
               </div>
             </div>
